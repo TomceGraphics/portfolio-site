@@ -1,0 +1,19 @@
+// Intersection Observer for animations
+function initAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-slide-up');
+        }
+      });
+    }, { threshold: 0.1 });
+  
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+  }
+  
+  // Initialize animations when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    initAnimations();
+  });
