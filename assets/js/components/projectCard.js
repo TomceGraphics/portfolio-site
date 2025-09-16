@@ -4,12 +4,15 @@ export function createProjectCard(project) {
     project.live ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-accent-50 text-accent-700 dark:bg-accent-900/30 dark:text-accent-200 border border-accent-100/70 dark:border-accent-800"><span class="iconify" data-icon="mdi:lightning-bolt"></span>Live</span>' : ''
   ].filter(Boolean).join('');
 
-  const actions = `
+  const hasRepoUrl = typeof project.repoUrl === 'string' && project.repoUrl.trim().length > 0;
+  const hasLiveUrl = project.live === true && typeof project.liveUrl === 'string' && project.liveUrl.trim().length > 0;
+
+  const actions = (hasRepoUrl || hasLiveUrl) ? `
     <div class="mt-3 flex items-center gap-2">
-      ${project.repoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
-      ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
+      ${hasRepoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
+      ${hasLiveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
     </div>
-  `;
+  ` : '';
 
   const tagChips = project.tags.map(t => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700">${t}</span>`).join('');
 
@@ -29,10 +32,10 @@ export function createProjectCard(project) {
          <span class="iconify text-slate-400" data-icon="ph:image-duotone" data-width="32" data-height="32"></span>
        </div>`;
 
-  const personalActions = (isPersonal && (project.repoUrl || project.liveUrl)) ? `
+  const personalActions = (isPersonal && (hasRepoUrl || hasLiveUrl)) ? `
     <div class="mt-3 flex items-center gap-2">
-      ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-brand-600 text-white hover:bg-brand-700 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
-      ${project.repoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
+      ${hasLiveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-brand-600 text-white hover:bg-brand-700 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
+      ${hasRepoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
     </div>
   ` : '';
 

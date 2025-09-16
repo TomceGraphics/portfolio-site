@@ -1,7 +1,7 @@
 export function renderProfileCard(container, profile) {
   container.innerHTML = `
     <div class="flex items-start gap-4">
-      <img src="${profile.avatar}" alt="${profile.name} avatar" class="h-16 w-16 rounded-xl ring-2 ring-brand-200 dark:ring-brand-800 object-cover" />
+      <img src="/assets/img/profilePic.png" alt="${profile.name} avatar" class="h-16 w-16 rounded-xl ring-2 ring-brand-200 dark:ring-brand-800 object-cover" />
       <div>
         <h1 class="text-2xl font-semibold tracking-tight">${profile.name}</h1>
         <p class="text-brand-600 dark:text-brand-400 font-medium">${profile.role}</p>
