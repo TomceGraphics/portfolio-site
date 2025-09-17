@@ -26,7 +26,7 @@ export const clientProjects = [
     caseStudyPath: '/parking-app/',
     repoUrl: null,
     liveUrl: null,  
-    cover: ''
+    cover: './parking-app/images/3-screens/showcase-3-screens.png'
   },
   {
     title: 'K&I',
@@ -63,7 +63,7 @@ export const personalProjects = [
     live: true,
     repoUrl: 'https://github.com/TomceGraphics/Prompt-Library',
     liveUrl: 'https://prompt-core.netlify.app/',
-    cover: 'https://github.com/TomceGraphics/Prompt-Library/blob/main/screen-shoots/mockup_grid_view.png'
+    cover: 'https://github.com/TomceGraphics/Prompt-Library/blob/main/screen-shoots/mockup_grid_view.png?raw=true'
   },
   {
     title: 'Graph Visualizer',
@@ -74,7 +74,7 @@ export const personalProjects = [
     live: false,
     repoUrl: 'https://github.com/TomceGraphics/graph-visualizer',
     liveUrl: 'null',
-    cover: 'https://github.com/TomceGraphics/graph-visualizer/blob/main/screenshots/site3.png'
+    cover: 'https://raw.githubusercontent.com/TomceGraphics/graph-visualizer/main/screenshots/site3.png'
   }
 ];
 

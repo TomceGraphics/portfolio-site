@@ -8,111 +8,13 @@
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          animation: {
-            'float': 'float 6s ease-in-out infinite',
-            'glow': 'glow 2s ease-in-out infinite alternate',
-            'slide-up': 'slideUp 0.6s ease-out',
-            'fade-in': 'fadeIn 0.8s ease-out',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' }
-            },
-            glow: {
-              'from': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.4)' },
-              'to': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' }
-            },
-            slideUp: {
-              'from': { opacity: '0', transform: 'translateY(30px)' },
-              'to': { opacity: '1', transform: 'translateY(0)' }
-            },
-            fadeIn: {
-              'from': { opacity: '0' },
-              'to': { opacity: '1' }
-            }
-          }
-        }
-      }
-    }
-
-    // Intersection Observer for animations
-    function initAnimations() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-slide-up');
-          }
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.animate-on-scroll').forEach(el => {
-        observer.observe(el);
-      });
-    }
-
-    let successChart, timeChart, satisfactionChart;
-
-    function createCharts() {
-      const textColor = '#e5e7eb';
-      const gridColor = '#374151';
-
-      // Success Rate Chart
-      const successCtx = document.getElementById('successChart')?.getContext('2d');
-      if (successCtx) {
-        successChart = new Chart(successCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Successful Payments', 'Failed Attempts'],
-            datasets: [{
-              data: [92, 8],
-              backgroundColor: [
-                'rgba(34, 197, 94, 0.8)',
-                'rgba(239, 68, 68, 0.8)'
-              ],
-              borderColor: [
-                'rgba(34, 197, 94, 1)',
-                'rgba(239, 68, 68, 1)'
-              ],
-              borderWidth: 2,
-              hoverOffset: 10
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  color: textColor,
-                  padding: 20,
-                  font: {
-                    size: 12,
-                    weight: '500'
-                  }
-                }
-              }
-            },
-            animation: {
-              animateRotate: true,
-              duration: 2000
-            }
-          }
-        });
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-      initAnimations();
-      setTimeout(createCharts, 500);
-    });
-  </script>
+  
+  <!-- Add our modular JS files -->
+  <script src="js/theme.js" type="module"></script>
+  <script src="js/animations.js" type="module"></script>
+  <script src="js/charts.js" type="module"></script>
+  <script src="js/main.js" type="module"></script>
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -688,24 +590,34 @@
         <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
           Visuals
         </h2>
-        <div class="w-24 h-1 bg-pink-500 mx-auto rounded-full"></div>
+        <div class="w-24 h-1 bg-pink-500 mx-auto rounded-full mb-8"></div>
       </div>
-      
-      <div class="grid md:grid-cols-2 gap-8">
+
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <h3 class="text-xl font-semibold mb-4 text-pink-600 dark:text-pink-400">Early Sketches & Wireframes</h3>
-          <div class="bg-gray-100 dark:bg-gray-700 rounded-xl h-64 flex items-center justify-center">
-            <span class="iconify text-6xl text-gray-400" data-icon="mdi:drawing"></span>
+          <img 
+            src="images/dashboard+pay/showcase-payment.png" 
+            alt="Payment Dashboard Showcase"
+            class="w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            loading="lazy"
+          >
+          <div class="mt-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Payment Dashboard</h3>
+            <p class="text-gray-600 dark:text-gray-300">Streamlined payment interface showing real-time parking status and payment options.</p>
           </div>
-          <p class="text-gray-500 dark:text-gray-400 text-sm mt-4">Initial concepts and wireframes exploring different user flows and interface layouts.</p>
         </div>
-        
+
         <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <h3 class="text-xl font-semibold mb-4 text-pink-600 dark:text-pink-400">Final UI Screens</h3>
-          <div class="bg-gray-100 dark:bg-gray-700 rounded-xl h-64 flex items-center justify-center">
-            <span class="iconify text-6xl text-gray-400" data-icon="mdi:cellphone"></span>
+          <img 
+            src="images/onboard/showcase-onboard.png" 
+            alt="Onboarding Showcase"
+            class="w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+            loading="lazy"
+          >
+          <div class="mt-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">User Onboarding</h3>
+            <p class="text-gray-600 dark:text-gray-300">Intuitive onboarding flow that guides new users through the app's features and benefits.</p>
           </div>
-          <p class="text-gray-500 dark:text-gray-400 text-sm mt-4">High-fidelity mockups of the final application showing the payment process and dashboard.</p>
         </div>
       </div>
     </section>
