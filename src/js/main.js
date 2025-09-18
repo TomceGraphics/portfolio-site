@@ -5,6 +5,7 @@ import { renderServices } from './sections/renderServices.js';
 import { renderProcess } from './sections/renderProcess.js';
 import { renderTestimonials } from './sections/renderTestimonials.js';
 import { renderArticles } from './sections/renderArticles.js';
+import { initNavbar } from './components/navbar.js';
 
 function initTheme() {
   const root = document.documentElement;
@@ -87,6 +88,7 @@ function initActiveNav() {
 }
 
 function init() {
+  initNavbar();
   initTheme();
   initFooterYear();
   initProfile();

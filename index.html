@@ -67,55 +67,31 @@
 
   <!-- Page Shell -->
   <div class="min-h-dvh">
-    <!-- Topbar -->
-    <header class="backdrop-blur supports-[backdrop-filter]:bg-white/60 bg-white/90 dark:bg-slate-950/80 sticky top-0 z-30 border-b border-slate-200/60 dark:border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="iconify text-brand-600" data-icon="ph:sparkle-duotone" data-width="24" data-height="24"></span>
-          <span class="font-semibold tracking-tight">From Zero → First Prototype</span>
-        </div>
-        <nav class="flex items-center gap-3">
-          <a href="#hero" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Home</a>
-          <a href="#work" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Work</a>
-          <a href="#services" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Services</a>
-          <a href="#process" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Process</a>
-          <a href="#testimonials" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Testimonials</a>
-          <a href="#articles" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Articles</a>
-          <button id="themeToggle" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-            <span class="iconify" data-icon="ph:moon-stars-duotone"></span>
-            <span class="text-sm">Theme</span>
-          </button>
-          <a href="#contact" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors shadow-subtle">
-            <span class="iconify" data-icon="ph:paper-plane-right-duotone"></span>
-            <span class="text-sm">Contact</span>
-          </a>
-        </nav>
-      </div>
-    </header>
+    <!-- Header will be injected here by navbar.js -->
 
     <!-- Hero -->
     <section id="hero" class="relative overflow-hidden border-b border-slate-200/70 dark:border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           <div class="lg:col-span-2">
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
               Hi, I'm <span class="text-brand-600">Thomas</span> <span class="text-brand-600">Graphics</span> a UI/UX Engineer.
             </h1>
-            <p class="mt-4 text-slate-600 dark:text-slate-300 max-w-2xl">
+            <p class="mt-4 text-slate-600 dark:text-slate-300 max-w-2xl text-base sm:text-lg">
               I help founders go from idea to a polished, testable frontend prototype with strong UX, scalable design systems, and accessible code.
             </p>
             <div class="mt-6 flex flex-wrap gap-3">
-              <a href="#work" class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors">
+              <a href="#work" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm sm:text-base rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors">
                 <span class="iconify" data-icon="ph:briefcase-duotone"></span>
                 View Work
               </a>
-              <a href="#services" class="inline-flex items-center gap-2 px-4 py-2 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+              <a href="#services" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm sm:text-base rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
                 <span class="iconify" data-icon="ph:gear-six-duotone"></span>
                 Services
               </a>
             </div>
           </div>
-          <div class="lg:col-span-1">
+          <div class="lg:col-span-1 mt-8 lg:mt-0">
             <section id="profileCard" class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-6 shadow-subtle"></section>
           </div>
         </div>
@@ -123,103 +99,126 @@
     </section>
 
     <!-- Main Sections -->
-    <main id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <main id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
       <!-- Work -->
-      <section id="work" class="scroll-mt-24">
-        <div class="flex items-end justify-between gap-4 mb-4">
-          <div>
-            <h2 class="text-2xl font-semibold">Client Projects</h2>
+      <section id="work" class="scroll-mt-20 sm:scroll-mt-24">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div class="mb-2 sm:mb-0">
+            <h2 class="text-xl sm:text-2xl font-semibold">Client Projects</h2>
             <p class="text-sm text-slate-500 dark:text-slate-400">High-impact projects delivered for clients.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button data-filter="all" class="filter-btn active inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
-            <button data-filter="live" class="filter-btn inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
-            <button data-filter="opensource" class="filter-btn inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button data-filter="all" class="filter-btn active inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
+            <button data-filter="live" class="filter-btn inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
+            <button data-filter="opensource" class="filter-btn inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
           </div>
         </div>
         <div id="clientProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6"></div>
       </section>
 
-      <section class="scroll-mt-24">
-        <div class="flex items-end justify-between gap-4 mb-4">
-          <div>
-            <h2 class="text-2xl font-semibold">Personal Projects</h2>
+      <section class="scroll-mt-20 sm:scroll-mt-24">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div class="mb-2 sm:mb-0">
+            <h2 class="text-xl sm:text-2xl font-semibold">Personal Projects</h2>
             <p class="text-sm text-slate-500 dark:text-slate-400">Smaller experiments and tools.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button data-filter="all-personal" class="filter-btn-personal active inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
-            <button data-filter="live-personal" class="filter-btn-personal inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
-            <button data-filter="opensource-personal" class="filter-btn-personal inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button data-filter="all-personal" class="filter-btn-personal active inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
+            <button data-filter="live-personal" class="filter-btn-personal inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
+            <button data-filter="opensource-personal" class="filter-btn-personal inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
           </div>
         </div>
-        <div id="personalProjects" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5"></div>
+        <div id="personalProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
       </section>
 
       <!-- Services -->
-<section id="services" class="scroll-mt-24">
-  <div class="mb-6">
-    <h2 class="text-2xl font-semibold">Services</h2>
-    <p class="text-sm text-slate-500 dark:text-slate-400">
-      Engagements tailored to move from zero to prototype.
-    </p>
-  </div>
-  <div id="servicesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <section id="services" class="scroll-mt-20 sm:scroll-mt-24">
+        <div class="mb-6">
+          <h2 class="text-xl sm:text-2xl font-semibold">Services</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Engagements tailored to move from zero to prototype.
+          </p>
+        </div>
+        <div id="servicesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-  <!-- Philosophy Statement -->
-  <div class="mt-8 p-6 rounded-xl border border-slate-200/70 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-    <h3 class="text-lg font-semibold mb-2">My Approach</h3>
-    <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-      I build with <span class="font-medium">vanilla JavaScript, Tailwind CSS, and modular ES6+</span>.
-      Not every project needs a heavy framework — and I’ve found that keeping things lightweight
-      makes prototypes faster to build, easier to maintain, and ready to connect to any backend.
-      This approach ensures you get <span class="font-medium">real, working MVPs</span> quickly,
-      without unnecessary complexity.
-    </p>
-  </div>
-</section>
+        <!-- Philosophy Statement -->
+        <div class="mt-8 p-4 sm:p-6 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-5 shadow-subtle">
+          <h3 class="text-lg font-semibold mb-2">My Approach</h3>
+          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+            I build with <span class="font-semibold">vanilla JavaScript, Tailwind CSS, and modular ES6+</span>.
+            Not every project needs a heavy framework — and I've found that keeping things lightweight
+            makes prototypes faster to build, easier to maintain, and ready to connect to any backend.
+            This approach ensures you get <span class="font-semibold">real, working MVPs</span> quickly,
+            without unnecessary complexity.
+          </p>
+        </div>
+      </section>
 
       <!-- Process -->
-      <section id="process" class="scroll-mt-24">
+      <section id="process" class="scroll-mt-20 sm:scroll-mt-24">
         <div class="mb-6">
-          <h2 class="text-2xl font-semibold">Process</h2>
+          <h2 class="text-xl sm:text-2xl font-semibold">Process</h2>
           <p class="text-sm text-slate-500 dark:text-slate-400">A clear path from idea to interactive prototype.</p>
         </div>
-        <ol id="processSteps" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></ol>
+        <ol id="processSteps" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></ol>
       </section>
 
       <!-- Testimonials -->
-      <section id="testimonials" class="scroll-mt-24">
+      <section id="testimonials" class="scroll-mt-20 sm:scroll-mt-24">
         <div class="mb-6">
-          <h2 class="text-2xl font-semibold">Testimonials</h2>
+          <h2 class="text-xl sm:text-2xl font-semibold">Testimonials</h2>
           <p class="text-sm text-slate-500 dark:text-slate-400">What partners say after shipping.</p>
         </div>
         <div id="testimonialsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </section>  
 
       <!-- Articles -->
-      <section id="articles" class="scroll-mt-24">
+      <section id="articles" class="scroll-mt-20 sm:scroll-mt-24">
         <div class="mb-6">
-          <h2 class="text-2xl font-semibold">Articles</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Selected writing. Medium integration coming soon.</p>
+          <h2 class="text-xl sm:text-2xl font-semibold">Latest Articles</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Thoughts on design, development, and process.</p>
         </div>
         <div id="articlesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="scroll-mt-20 sm:scroll-mt-24">
+        <div class="bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/30 dark:to-brand-900/10 rounded-2xl p-6 sm:p-8 md:p-12">
+          <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4">Ready to build something great?</h2>
+            <p class="text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
+              Have a project in mind or want to discuss how I can help bring your ideas to life? Let's talk!
+            </p>
+            <a href="mailto:hello@example.com" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors text-base font-medium">
+              <span class="iconify" data-icon="ph:envelope-simple-duotone"></span>
+              Get in Touch
+            </a>
+          </div>
+        </div>
       </section>
     </main>
 
     <!-- Footer -->
-    <footer id="contact" class="mt-10 border-t border-slate-200/70 dark:border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm text-slate-500 dark:text-slate-400">© <span id="year"></span> Thomas Graphics. All rights reserved.</p>
-        <div class="flex items-center gap-3">
-          <a href="#" class="inline-flex items-center gap-1 text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class="iconify" data-icon="mdi:github"></span><span class="text-sm">GitHub</span></a>
-          <a href="#" class="inline-flex items-center gap-1 text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class="iconify" data-icon="mdi:linkedin"></span><span class="text-sm">LinkedIn</span></a>
-          <a href="mailto:hello@example.com" class="inline-flex items-center gap-1 text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class="iconify" data-icon="mdi:email"></span><span class="text-sm">Email</span></a>
+    <footer class="border-t border-slate-200/70 dark:border-slate-800 mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="iconify text-brand-600" data-icon="ph:sparkle-duotone" data-width="20" data-height="20"></span>
+            <span class="font-medium">Thomas Graphics</span>
+          </div>
+          <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+            <span> 2023 All rights reserved</span>
+            <span class="hidden md:inline">•</span>
+            <a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Privacy</a>
+            <span>•</span>
+            <a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Terms</a>
+          </div>
         </div>
       </div>
     </footer>
   </div>
 
   <!-- App Scripts (ES Modules) -->
-  <script type="module" src="/assets/js/main.js"></script>
+  <script type="module" src="/src/js/main.js"></script>
 </body>
 </html>
