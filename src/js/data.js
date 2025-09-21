@@ -23,10 +23,10 @@ export const clientProjects = [
     type: 'client',
     openSource: false,
     live: false,
-    caseStudyPath: '/parking-app/',
+    caseStudyPath: 'client-projects/parking-app/',
     repoUrl: null,
     liveUrl: null,  
-    cover: './parking-app/images/3-screens/showcase-3-screens.png'
+    cover: 'client-projects/parking-app/images/3-screens/showcase-3-screens.png'
   },
   {
     title: 'K&I',
@@ -35,10 +35,10 @@ export const clientProjects = [
     type: 'client',
     openSource: false,
     live: false,
-    caseStudyPath: '/k&i/',
+    caseStudyPath: 'client-projects/K&I/CaseStudy.pdf',
     repoUrl: null,
     liveUrl: null,
-    cover: ''
+    cover: 'client-projects/K&I/k&i-cover.webp'
   }
 ];
 
@@ -52,7 +52,7 @@ export const personalProjects = [
     live: true,
     repoUrl: '#',
     liveUrl: 'https://gym-core.netlify.app/',
-    cover: ''
+    cover: 'assets/covers/gym-core-cover01.webp'
   },
   {
     title: 'Prompt Library',
@@ -63,7 +63,7 @@ export const personalProjects = [
     live: true,
     repoUrl: 'https://github.com/TomceGraphics/Prompt-Library',
     liveUrl: 'https://prompt-core.netlify.app/',
-    cover: 'https://github.com/TomceGraphics/Prompt-Library/blob/main/screen-shoots/mockup_grid_view.png?raw=true'
+    cover: 'assets/covers/prompt-library-cover.webp'
   },
   {
     title: 'Graph Visualizer',
@@ -74,7 +74,7 @@ export const personalProjects = [
     live: false,
     repoUrl: 'https://github.com/TomceGraphics/graph-visualizer',
     liveUrl: 'null',
-    cover: 'https://raw.githubusercontent.com/TomceGraphics/graph-visualizer/main/screenshots/site3.png'
+    cover: 'assets/covers/graph-visualizer-cover.webp'
   }
 ];
 

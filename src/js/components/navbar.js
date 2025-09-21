@@ -19,7 +19,7 @@ export function initNavbar() {
           <a href="#process" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Process</a>
           <a href="#testimonials" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Testimonials</a>
           <a href="#articles" class="nav-link text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 px-2 py-1 rounded-md">Articles</a>
-          <button id="themeToggle" class="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+          <button id="themeToggle" class="lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
             <span class="iconify theme-icon" data-icon="ph:moon-stars-duotone"></span>
             <span class="text-sm">Theme</span>
           </button>
@@ -71,35 +71,42 @@ export function initNavbar() {
   function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
     const mobileThemeToggle = document.getElementById('mobileThemeToggle');
-    const themeIcon = document.querySelector('.theme-icon');
+    const themeIcons = document.querySelectorAll('.theme-icon');
     
     // Check for saved theme preference or use system preference
+    const updateTheme = (isDark) => {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        themeIcons.forEach(icon => icon.setAttribute('data-icon', 'ph:sun-duotone'));
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeIcons.forEach(icon => icon.setAttribute('data-icon', 'ph:moon-stars-duotone'));
+      }
+    };
+    
+    // Initial theme setup
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-      themeIcon?.setAttribute('data-icon', 'ph:sun-duotone');
+      updateTheme(true);
     } else {
-      document.documentElement.classList.remove('dark');
-      themeIcon?.setAttribute('data-icon', 'ph:moon-stars-duotone');
+      updateTheme(false);
     }
     
     // Toggle theme function
     const toggleTheme = () => {
-      if (document.documentElement.classList.contains('dark')) {
-        document.documentElement.classList.remove('dark');
-        localStorage.theme = 'light';
-        themeIcon?.setAttribute('data-icon', 'ph:moon-stars-duotone');
-      } else {
-        document.documentElement.classList.add('dark');
-        localStorage.theme = 'dark';
-        themeIcon?.setAttribute('data-icon', 'ph:sun-duotone');
-      }
+      const isDark = !document.documentElement.classList.contains('dark');
+      localStorage.theme = isDark ? 'dark' : 'light';
+      updateTheme(isDark);
     };
     
     // Add event listeners
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', () => {
-      toggleTheme();
-      document.getElementById('mobileMenu').classList.add('hidden');
+    if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
+    
+    // Watch for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (!('theme' in localStorage)) {
+        updateTheme(e.matches);
+      }
     });
   }
   

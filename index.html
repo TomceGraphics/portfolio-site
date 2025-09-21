@@ -61,6 +61,58 @@
 
   <!-- Iconify -->
   <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  
+  <!-- Custom Scrollbar Styles -->
+  <style>
+    /* For WebKit browsers (Chrome, Safari, newer Edge) */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(242, 171, 1, 0.3); /* Brand-500 with opacity */
+      border-radius: 3px;
+      transition: background 0.2s ease;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(242, 171, 1, 0.5); /* Slightly more visible on hover */
+    }
+    
+    /* Remove scrollbar buttons/arrows */
+    ::-webkit-scrollbar-button {
+      display: none;
+    }
+    
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 196, 14, 0.3); /* Brand-400 with opacity */
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 196, 14, 0.5);
+      }
+    }
+    
+    /* For Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(242, 171, 1, 0.3) transparent; /* Brand-500 with opacity */
+    }
+    
+    /* For dark mode in Firefox */
+    @media (prefers-color-scheme: dark) {
+      * {
+        scrollbar-color: rgba(255, 196, 14, 0.3) transparent; /* Brand-400 with opacity */
+      }
+    }
+  </style>
 </head>
 <body class="bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-brand-200 selection:text-brand-900">
   <a href="#content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-brand-600 focus:text-white focus:px-3 focus:py-2 focus:rounded-md">Skip to content</a>
@@ -189,7 +241,7 @@
             <p class="text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
               Have a project in mind or want to discuss how I can help bring your ideas to life? Let's talk!
             </p>
-            <a href="mailto:hello@example.com" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors text-base font-medium">
+            <a href="mailto:tomce.graphics@gmail.com" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors text-base font-medium">
               <span class="iconify" data-icon="ph:envelope-simple-duotone"></span>
               Get in Touch
             </a>

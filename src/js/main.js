@@ -7,20 +7,6 @@ import { renderTestimonials } from './sections/renderTestimonials.js';
 import { renderArticles } from './sections/renderArticles.js';
 import { initNavbar } from './components/navbar.js';
 
-function initTheme() {
-  const root = document.documentElement;
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (saved === 'dark' || (!saved && prefersDark)) root.classList.add('dark');
-  const btn = document.getElementById('themeToggle');
-  if (btn) {
-    btn.addEventListener('click', () => {
-      root.classList.toggle('dark');
-      localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
-    });
-  }
-}
-
 function initFooterYear() {
   const y = document.getElementById('year');
   if (y) y.textContent = String(new Date().getFullYear());
@@ -32,16 +18,55 @@ function initProfile() {
 }
 
 function initProjects() {
-  const clientContainer = document.getElementById('clientProjects');
-  const personalContainer = document.getElementById('personalProjects');
-  if (clientContainer) {
-    renderProjects(clientContainer, clientProjects);
-    attachFilterControls('.filter-btn', clientContainer, clientProjects);
+  const clientProjectsEl = document.getElementById('clientProjects');
+  const personalProjectsEl = document.getElementById('personalProjects');
+  
+  if (clientProjectsEl) {
+    renderProjects(clientProjectsEl, clientProjects);
+    attachFilterControls('.filter-btn', clientProjectsEl, clientProjects);
   }
-  if (personalContainer) {
-    renderProjects(personalContainer, personalProjects);
-    attachFilterControls('.filter-btn-personal', personalContainer, personalProjects);
+  
+  if (personalProjectsEl) {
+    renderProjects(personalProjectsEl, personalProjects);
+    attachFilterControls('.filter-btn-personal', personalProjectsEl, personalProjects);
   }
+}
+
+function initNewSections() {
+  const servicesEl = document.getElementById('servicesList');
+  const processEl = document.getElementById('processSteps');
+  const testimonialsEl = document.getElementById('testimonialsList');
+  const articlesEl = document.getElementById('articlesList');
+  
+  if (servicesEl) renderServices(servicesEl, services);
+  if (processEl) renderProcess(processEl, processSteps);
+  if (testimonialsEl) renderTestimonials(testimonialsEl, testimonials);
+  if (articlesEl) renderArticles(articlesEl, articles);
+}
+
+function initActiveNav() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  function updateActiveNav() {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (pageYOffset >= sectionTop - 200) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('text-brand-600', 'dark:text-brand-400');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('text-brand-600', 'dark:text-brand-400');
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
 }
 
 function initMicroInteractions() {
@@ -58,46 +83,14 @@ function initMicroInteractions() {
   });
 }
 
-function initNewSections() {
-  const s = document.getElementById('servicesList');
-  if (s) renderServices(s, services);
-  const p = document.getElementById('processSteps');
-  if (p) renderProcess(p, processSteps);
-  const t = document.getElementById('testimonialsList');
-  if (t) renderTestimonials(t, testimonials);
-  const a = document.getElementById('articlesList');
-  if (a) renderArticles(a, articles);
-}
-
-function initActiveNav() {
-  const links = document.querySelectorAll('a.nav-link');
-  const sections = Array.from(links).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const id = `#${entry.target.id}`;
-      const link = document.querySelector(`a.nav-link[href="${id}"]`);
-      if (link) {
-        if (entry.isIntersecting) {
-          links.forEach(l => l.classList.remove('bg-slate-100','dark:bg-slate-800'));
-          link.classList.add('bg-slate-100','dark:bg-slate-800');
-        }
-      }
-    });
-  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0.01 });
-  sections.forEach(s => observer.observe(s));
-}
-
 function init() {
   initNavbar();
-  initTheme();
-  initFooterYear();
   initProfile();
   initProjects();
   initNewSections();
   initActiveNav();
+  initFooterYear();
   initMicroInteractions();
 }
 
 document.addEventListener('DOMContentLoaded', init);
-
-
