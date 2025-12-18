@@ -1,635 +1,400 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Study: Digital Parking App for Ohrid</title>
+  <title>Ohrid Digital Parking | Case Study</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Icons & Charts -->
   <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  
-  <!-- Add our modular JS files -->
-  <script src="js/theme.js" type="module"></script>
-  <script src="js/animations.js" type="module"></script>
-  <script src="js/charts.js" type="module"></script>
-  <script src="js/main.js" type="module"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Fonts: Space Grotesk (Headings) & Inter (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              500: '#0ea5e9', // Sky blue
+              600: '#0284c7',
+              900: '#0c4a6e',
+            },
+            dark: {
+              bg: '#050505',
+              card: '#0A0A0A',
+              border: '#1F1F1F'
+            }
+          },
+          animation: {
+            'blob': 'blob 10s infinite',
+            'fade-up': 'fadeUp 0.8s ease-out forwards',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    body {
-      font-family: 'Inter', sans-serif;
+    body { background-color: #050505; color: #e5e5e5; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
-    .animate-on-scroll {
+    .gradient-text {
+      background: linear-gradient(to right, #60a5fa, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .reveal {
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
     }
-    
-    .animate-on-scroll.animate-slide-up {
+    .reveal.active {
       opacity: 1;
       transform: translateY(0);
     }
+    /* Hide scrollbar for clean look */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
   </style>
 </head>
-<body class="relative bg-gray-900 text-gray-100 overflow-x-hidden">
+<body class="antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- Enhanced Background with Subtle Colors -->
-  <div class="fixed inset-0 -z-10 overflow-hidden">
-    <!-- Subtle gradient blobs -->
-    <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-r from-blue-100/30 to-blue-200/20 rounded-full blur-3xl animate-float"></div>
-    <div class="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-gradient-to-r from-gray-100/30 to-gray-200/20 rounded-full blur-3xl animate-float" style="animation-delay: -2s;"></div>
-    <div class="absolute top-[30%] left-[70%] w-[400px] h-[400px] bg-gradient-to-r from-indigo-100/20 to-purple-100/20 rounded-full blur-3xl animate-float" style="animation-delay: -4s;"></div>
-    
-    <!-- Grid pattern overlay -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.05)_1px,transparent_0)] dark:bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[length:40px_40px]"></div>
+  <!-- Ambient Background Glow -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[128px] animate-blob"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[128px] animate-blob animation-delay-2000"></div>
   </div>
 
-  <!-- Enhanced Header -->
-  <header class="relative max-w-6xl mx-auto px-6 py-16 text-center">
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 border-b border-white/5 bg-dark-bg/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <span class="font-display font-bold text-xl tracking-tight">Ohrid<span class="text-brand-500">.Parking</span></span>
+      
+      <!-- FIXED: Back to Portfolio Link -->
+      <a href="index.html" class="group flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">
+        <span class="iconify text-lg group-hover:-translate-x-1 transition-transform" data-icon="heroicons:arrow-left"></span>
+        Back to Portfolio
+      </a>
+    </div>
+  </nav>
 
-    <!-- Hero Content -->    
-      <h1 class="text-5xl md:text-6xl font-bold mb-6 text-gray-800 dark:text-white leading-tight">
-        Digital Parking
-        <br>
-        <span class="text-3xl md:text-4xl font-semibold text-blue-600 dark:text-blue-400">App for Ohrid</span>
+  <main class="pt-32 pb-24 px-6">
+    
+    <!-- Hero Section -->
+    <header class="max-w-5xl mx-auto mb-24">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium mb-6 reveal">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+        </span>
+        UX Case Study 2025
+      </div>
+      
+      <h1 class="font-display text-6xl md:text-8xl font-medium leading-[0.9] tracking-tight mb-8 reveal" style="transition-delay: 100ms;">
+        Transforming Urban<br>
+        <span class="gradient-text">Mobility & Revenue.</span>
       </h1>
       
-      <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-        A comprehensive case study on designing and developing a digital parking solution to improve user experience and increase city revenue
+      <p class="text-xl text-gray-400 max-w-2xl leading-relaxed mb-10 reveal" style="transition-delay: 200ms;">
+        How I reduced parking payment time from 120s to 25s, recovering lost city revenue through a user-centric digital transformation.
       </p>
-      
-      <div class="flex flex-wrap justify-center gap-4 mt-8">
-        <span class="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">UI/UX Designer</span>
-        <span class="px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium">Full-Stack Developer</span>
-        <span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">Product Owner</span>
+
+      <!-- ADDED: Medium Button -->
+      <div class="flex flex-wrap gap-4 reveal" style="transition-delay: 300ms;">
+        <a href="https://medium.com/design-bootcamp/from-frustration-to-flow-how-i-designed-a-digital-parking-solution-75b9019a3f32" target="_blank" 
+           class="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200 transition-colors">
+          <span class="iconify text-xl" data-icon="logos:medium-icon"></span>
+          Read Full Story
+        </a>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="relative max-w-6xl mx-auto px-6 space-y-24 pb-24">
-
-    <!-- Project Overview -->
-    <section class="animate-on-scroll">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-          Project Overview
-        </h2>
-        <div class="w-24 h-1 bg-blue-500 mx-auto rounded-full"></div>
-      </div>
-
-      <div class="grid lg:grid-cols-2 gap-12 items-stretch">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm h-full">
-          <div class="space-y-6">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                <span class="iconify text-2xl text-blue-600 dark:text-blue-400" data-icon="mdi:information"></span>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">Project</p>
-                <p class="text-gray-600 dark:text-gray-300">Digital Payment Solution for Ohrid</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
-                <span class="iconify text-2xl text-purple-600 dark:text-purple-400" data-icon="mdi:account-star"></span>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">Role</p>
-                <p class="text-gray-600 dark:text-gray-300">UI/UX Designer & Developer</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-                <span class="iconify text-2xl text-green-600 dark:text-green-400" data-icon="mdi:clock-outline"></span>
-              </div>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">Timeline</p>
-                <p class="text-gray-600 dark:text-gray-300">2 months + iterations</p>
-              </div>
-            </div>
+    <!-- The "Bento" Grid (High Impact Summary) -->
+    <section class="max-w-7xl mx-auto mb-32 reveal">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Role -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between h-48 group hover:border-brand-500/30 transition-colors">
+          <div class="text-gray-400 text-sm font-medium uppercase tracking-wider">My Role</div>
+          <div>
+            <span class="iconify text-3xl mb-2 text-white" data-icon="carbon:user-role"></span>
+            <div class="font-display text-xl">Product Designer <br>& Full Stack Dev</div>
           </div>
         </div>
 
-        <!-- Enhanced Tools Section -->
-        <section class="animate-on-scroll">
-          <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm h-full">
-            <div class="flex items-center gap-4"> 
-              <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-                Tools
-              </h2>
-            </div>
-            <div class="space-y-6">
-              <div class="grid grid-cols-3 gap-6">
-                <div class="group bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all duration-300">
-                  <div class="flex flex-col items-center space-y-4">
-                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
-                      <span class="iconify text-3xl text-blue-600 dark:text-blue-400" data-icon="logos:figma"></span>
-                    </div>
-                    <p class="font-bold text-gray-900 dark:text-white">Figma</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center">UI/UX Design</p>
-                  </div>
-                </div>
-                
-                <div class="group bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all duration-300">
-                  <div class="flex flex-col items-center space-y-4">
-                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
-                      <span class="iconify text-3xl text-blue-600 dark:text-blue-400" data-icon="logos:visual-studio-code"></span>
-                    </div>
-                    <p class="font-bold text-gray-900 dark:text-white">VS Code</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Development</p>
-                  </div>
-                </div>
-                
-                <div class="group bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 hover:scale-105 transition-all duration-300">
-                  <div class="flex flex-col items-center space-y-4">
-                    <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center group-hover:rotate-6 transition-transform duration-300">
-                      <span class="iconify text-3xl text-gray-600 dark:text-gray-400" data-icon="logos:github-icon"></span>
-                    </div>
-                    <p class="font-bold text-gray-900 dark:text-white">GitHub</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Version Control</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <!-- Metric Hook -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between h-48 lg:col-span-2 relative overflow-hidden group">
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="text-blue-400 text-sm font-medium uppercase tracking-wider relative z-10">Key Outcome</div>
+          <div class="relative z-10 flex items-end gap-4">
+            <span class="font-display text-7xl font-bold text-white">92%</span>
+            <span class="text-gray-400 mb-2 text-lg">Payment Success Rate <br>(vs 60% Legacy)</span>
           </div>
-        </section>
+        </div>
 
-      </div>
-
-      <div class="mt-12 text-center">
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-          Born from personal frustration, this project evolved into a comprehensive proposal for the city of Ohrid: a digital parking solution designed to improve user experience while significantly boosting city revenue through streamlined payment processes.
-        </p>
+        <!-- Stack -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between h-48 hover:border-brand-500/30 transition-colors">
+          <div class="text-gray-400 text-sm font-medium uppercase tracking-wider">Tech Stack</div>
+          <div class="flex gap-3">
+            <span class="iconify text-3xl text-gray-300 hover:text-[#F24E1E] transition-colors" data-icon="logos:figma"></span>
+            <span class="iconify text-3xl text-gray-300 hover:text-blue-500 transition-colors" data-icon="logos:react"></span>
+            <span class="iconify text-3xl text-gray-300 hover:text-cyan-400 transition-colors" data-icon="logos:tailwindcss-icon"></span>
+            <span class="iconify text-3xl text-gray-300 hover:text-white transition-colors" data-icon="logos:github-icon"></span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Problem & Goals Grid -->
-    <div class="grid lg:grid-cols-2 gap-12">
-      <!-- Problem Statement -->
-      <section class="animate-on-scroll">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm h-full">
-          <div class="flex items-center gap-4 mb-8">
-            <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
-              <span class="iconify text-3xl text-red-600 dark:text-red-400" data-icon="mdi:alert"></span>
-            </div>
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Problem Statement</h2>
-          </div>
-          <ul class="space-y-6">
-            <li class="flex items-start gap-4">
-              <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <span class="iconify text-red-600 dark:text-red-400" data-icon="mdi:account-off"></span>
-              </div>
-              <p class="text-gray-700 dark:text-gray-300">Tourists often avoided fines, leading to significant revenue losses for the city</p>
+    <!-- The Friction (Problem) -->
+    <section class="max-w-5xl mx-auto mb-32 grid md:grid-cols-2 gap-16 items-center reveal">
+      <div>
+        <h2 class="font-display text-3xl md:text-4xl font-bold mb-6">The 120-Second <br>Bottleneck</h2>
+        <div class="space-y-6 text-gray-400 leading-relaxed">
+          <p>
+            Ohrid, a UNESCO heritage city, was losing thousands in revenue. Why? Because paying for parking was harder than avoiding the fine.
+          </p>
+          <ul class="space-y-4 mt-4">
+            <li class="flex items-start gap-3">
+              <span class="iconify text-red-400 text-xl mt-1" data-icon="heroicons:x-circle"></span>
+              <span><strong>Revenue Leak:</strong> Tourists couldn't use the SMS-only system, leading to abandoned payments.</span>
             </li>
-            <li class="flex items-start gap-4">
-              <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <span class="iconify text-red-600 dark:text-red-400" data-icon="mdi:message-text-clock"></span>
-              </div>
-              <p class="text-gray-700 dark:text-gray-300">Locals found SMS payment process slow, unreliable, and frustrating</p>
-            </li>
-            <li class="flex items-start gap-4">
-              <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <span class="iconify text-red-600 dark:text-red-400" data-icon="mdi:timeline-clock-outline"></span>
-              </div>
-              <p class="text-gray-700 dark:text-gray-300">Outdated payment infrastructure created friction for all user groups</p>
+            <li class="flex items-start gap-3">
+              <span class="iconify text-red-400 text-xl mt-1" data-icon="heroicons:clock"></span>
+              <span><strong>High Friction:</strong> Locals faced a sluggish 2-minute process prone to network errors.</span>
             </li>
           </ul>
         </div>
-      </section>
-
-      <!-- Goals -->
-      <section class="animate-on-scroll">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm h-full">
-          <div class="flex items-center gap-4 mb-8">
-            <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-              <span class="iconify text-3xl text-green-600 dark:text-green-400" data-icon="mdi:bullseye-arrow"></span>
-            </div>
-            <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Goals</h2>
-          </div>
-          <div class="space-y-6">
-            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-              <span class="iconify text-2xl text-green-600 dark:text-green-400" data-icon="mdi:city"></span>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">City Impact</p>
-                <p class="text-gray-600 dark:text-gray-300">Increase revenue by reducing unpaid fines and streamlining collection</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-              <span class="iconify text-2xl text-blue-600 dark:text-blue-400" data-icon="mdi:account"></span>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">User Experience</p>
-                <p class="text-gray-600 dark:text-gray-300">Make payments quick, intuitive, and completely error-free</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
-              <span class="iconify text-2xl text-purple-600 dark:text-purple-400" data-icon="mdi:code-tags"></span>
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">Technical Goals</p>
-                <p class="text-gray-600 dark:text-gray-300">Build a lean, scalable MVP to test market feasibility</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-        <!-- Process Section -->
-        <section class="animate-on-scroll">
-          <div class="text-center mb-16">
-            <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-              Design Process
-            </h2>
-            <div class="w-24 h-1 bg-purple-500 mx-auto rounded-full"></div>
-          </div>
-    
-          <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div class="grid md:grid-cols-2 gap-8">
-              <div>
-                <!-- Research Phase -->
-                <div class="flex items-start mb-8">
-                  <div class="flex-shrink-0 relative mr-5">
-                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center relative">
-                      <span class="text-lg font-bold text-blue-600 dark:text-blue-400 absolute -top-2 -left-2 bg-white dark:bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-sm">01</span>
-                      <span class="iconify text-blue-600 dark:text-blue-400" data-icon="mdi:magnify"></span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Research</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Conducted in-depth interviews with drivers, analyzed the existing SMS system, and observed behavioral patterns across technical and non-technical user groups.</p>
-                  </div>
-                </div>
-                
-                <!-- Design Iterations Phase -->
-                <div class="flex items-start mb-8">
-                  <div class="flex-shrink-0 relative mr-5">
-                    <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center relative">
-                      <span class="text-lg font-bold text-purple-600 dark:text-purple-400 absolute -top-2 -left-2 bg-white dark:bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-sm">02</span>
-                      <span class="iconify text-purple-600 dark:text-purple-400" data-icon="mdi:palette"></span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Design Iterations</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Evolved from initial sketches to refined user flows, ultimately pivoting to a lean MVP approach focused on core payment functionality and stakeholder priorities.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <!-- Challenges Phase -->
-                <div class="flex items-start mb-8">
-                  <div class="flex-shrink-0 relative mr-5">
-                    <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center relative">
-                      <span class="text-lg font-bold text-orange-600 dark:text-orange-400 absolute -top-2 -left-2 bg-white dark:bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-sm">03</span>
-                      <span class="iconify text-orange-600 dark:text-orange-400" data-icon="mdi:alert-outline"></span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Challenges</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Initial version was rejected for being too user-focused. Successfully realigned with stakeholder revenue goals while managing scope creep and maintaining user experience quality.</p>
-                  </div>
-                </div>
-                
-                <!-- Development Phase -->
-                <div class="flex items-start">
-                  <div class="flex-shrink-0 relative mr-5">
-                    <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center relative">
-                      <span class="text-lg font-bold text-green-600 dark:text-green-400 absolute -top-2 -left-2 bg-white dark:bg-gray-800 rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-sm">04</span>
-                      <span class="iconify text-green-600 dark:text-green-400" data-icon="mdi:code-tags"></span>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800 dark:text-white">Development & Testing</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Built complete application with admin dashboard. Conducted extensive testing with diverse user groups including technical, non-technical, and elderly users achieving 90%+ success rates.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-    <!-- Results Section -->
-    <section class="animate-on-scroll">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-          Results & Impact
-        </h2>
-        <div class="w-24 h-1 bg-green-500 mx-auto rounded-full"></div>
       </div>
-
-      <div class="grid md:grid-cols-3 gap-8 mb-16">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm text-center">
-          <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-            <span class="iconify text-3xl text-green-600 dark:text-green-400" data-icon="mdi:check-all"></span>
+      <div class="relative">
+        <!-- Abstract visual for friction -->
+        <div class="absolute inset-0 bg-red-500/10 blur-[60px] rounded-full"></div>
+        <div class="glass-card p-8 rounded-2xl relative border-red-500/20">
+          <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+            <span class="text-gray-400">Old Workflow</span>
+            <span class="text-red-400 font-mono">120s duration</span>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Fully Functional MVP</h3>
-          <p class="text-gray-600 dark:text-gray-300">Delivered a complete, working prototype with all core features implemented.</p>
-        </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm text-center">
-          <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-            <span class="iconify text-3xl text-blue-600 dark:text-blue-400" data-icon="mdi:account-group"></span>
+          <div class="space-y-3">
+            <div class="h-2 w-full bg-gray-800 rounded"></div>
+            <div class="h-2 w-3/4 bg-gray-800 rounded"></div>
+            <div class="h-2 w-5/6 bg-red-900/40 rounded animate-pulse"></div>
+            <div class="h-2 w-1/2 bg-gray-800 rounded"></div>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">User Validation</h3>
-          <p class="text-gray-600 dark:text-gray-300">Tested with 10+ diverse users across different demographics and tech proficiency.</p>
-        </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm text-center">
-          <div class="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mb-4 mx-auto">
-            <span class="iconify text-3xl text-teal-600 dark:text-teal-400" data-icon="mdi:progress-check"></span>
+          <div class="mt-6 flex gap-2">
+             <span class="px-2 py-1 bg-red-500/10 text-red-400 text-xs rounded border border-red-500/20">Error 404</span>
+             <span class="px-2 py-1 bg-red-500/10 text-red-400 text-xs rounded border border-red-500/20">Timeout</span>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">High Success Rate</h3>
-          <p class="text-gray-600 dark:text-gray-300">90%+ of test users completed payments without assistance.</p>
         </div>
       </div>
-
-      <!-- Charts Section -->
-      <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-sm">
-        <h3 class="text-2xl font-bold mb-8 text-center text-gray-800 dark:text-white">Performance Metrics</h3>
-        
-        <div class="grid md:grid-cols-2 gap-8 mb-12">
-          <!-- Success Rate Chart -->
-          <div class="h-80">
-            <h4 class="text-lg font-medium mb-4 text-center text-gray-700 dark:text-gray-300">Payment Success Rate</h4>
-            <canvas id="successChart"></canvas>
-          </div>
-          
-          <!-- Time Comparison Chart -->
-          <div class="h-80">
-            <h4 class="text-lg font-medium mb-4 text-center text-gray-700 dark:text-gray-300">Time Comparison (seconds)</h4>
-            <canvas id="timeChart"></canvas>
-          </div>
-        </div>
-        
-        <!-- User Satisfaction Chart -->
-        <div class="h-80">
-          <h4 class="text-lg font-medium mb-4 text-center text-gray-700 dark:text-gray-300">User Satisfaction Ratings</h4>
-          <canvas id="satisfactionChart"></canvas>
-        </div>
-      </div>
-
-      <!-- Add this script right before the closing </body> tag -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          // Success Rate Chart (Doughnut)
-          const successCtx = document.getElementById('successChart').getContext('2d');
-          new Chart(successCtx, {
-            type: 'doughnut',
-            data: {
-              labels: ['Successful Payments', 'Failed/Abandoned'],
-              datasets: [{
-                data: [92, 8],
-                backgroundColor: [
-                  'rgba(54, 215, 160, 0.8)',
-                  'rgba(255, 99, 132, 0.8)'
-                ],
-                borderColor: [
-                  'rgba(54, 215, 160, 1)',
-                  'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1,
-                hoverOffset: 15
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'bottom',
-                  labels: {
-                    color: '#e5e7eb',
-                    padding: 20,
-                    font: {
-                      size: 14
-                    }
-                  }
-                },
-                tooltip: {
-                  backgroundColor: '#1f2937',
-                  titleColor: '#fff',
-                  bodyColor: '#fff',
-                  borderColor: 'rgba(54, 215, 160, 0.5)',
-                  borderWidth: 1,
-                  padding: 12,
-                  boxPadding: 6
-                }
-              },
-              cutout: '70%'
-            }
-          });
-
-          // Time Comparison Chart (Bar)
-          const timeCtx = document.getElementById('timeChart').getContext('2d');
-          new Chart(timeCtx, {
-            type: 'bar',
-            data: {
-              labels: ['Old System', 'New App'],
-              datasets: [{
-                label: 'Average Time (seconds)',
-                data: [120, 25],
-                backgroundColor: [
-                  'rgba(79, 70, 229, 0.7)',
-                  'rgba(16, 185, 129, 0.7)'
-                ],
-                borderColor: [
-                  'rgba(79, 70, 229, 1)',
-                  'rgba(16, 185, 129, 1)'
-                ],
-                borderWidth: 1,
-                borderRadius: 4
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                  },
-                  ticks: {
-                    color: '#9ca3af'
-                  }
-                },
-                x: {
-                  grid: {
-                    display: false
-                  },
-                  ticks: {
-                    color: '#9ca3af'
-                  }
-                }
-              },
-              plugins: {
-                legend: {
-                  display: false
-                },
-                tooltip: {
-                  backgroundColor: '#1f2937',
-                  titleColor: '#fff',
-                  bodyColor: '#fff',
-                  borderColor: 'rgba(79, 70, 229, 0.5)',
-                  borderWidth: 1
-                }
-              }
-            }
-          });
-
-          // User Satisfaction Chart (Radar)
-          const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
-          new Chart(satisfactionCtx, {
-            type: 'radar',
-            data: {
-              labels: ['Ease of Use', 'Speed', 'Design', 'Reliability', 'Features'],
-              datasets: [{
-                label: 'Satisfaction Score',
-                data: [9, 8, 8.5, 9.2, 7.8],
-                backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                borderColor: 'rgba(139, 92, 246, 1)',
-                pointBackgroundColor: 'rgba(139, 92, 246, 1)',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: 'rgba(139, 92, 246, 1)'
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                r: {
-                  angleLines: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                  },
-                  suggestedMin: 0,
-                  suggestedMax: 10,
-                  ticks: {
-                    stepSize: 2,
-                    color: '#9ca3af'
-                  },
-                  pointLabels: {
-                    color: '#9ca3af'
-                  },
-                  grid: {
-                    color: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }
-              },
-              plugins: {
-                legend: {
-                  position: 'top',
-                  labels: {
-                    color: '#9ca3af',
-                    padding: 20
-                  }
-                },
-                tooltip: {
-                  backgroundColor: '#1f2937',
-                  titleColor: '#fff',
-                  bodyColor: '#fff',
-                  borderColor: 'rgba(139, 92, 246, 0.5)',
-                  borderWidth: 1
-                }
-              }
-            }
-          });
-        });
-      </script>
     </section>
 
-    <!-- Lessons Learned -->
-    <section class="animate-on-scroll">
+    <!-- The Solution (Visual Showcase) -->
+    <section class="max-w-7xl mx-auto mb-32 reveal">
       <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-          Lessons Learned
-        </h2>
-        <div class="w-24 h-1 bg-yellow-500 mx-auto rounded-full"></div>
+        <h2 class="font-display text-4xl font-bold mb-4">Designed for Speed</h2>
+        <p class="text-gray-400">Streamlining the core loop: Scan, Confirm, Pay.</p>
       </div>
 
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center mb-4">
-            <span class="iconify text-2xl text-yellow-600 dark:text-yellow-400" data-icon="mdi:scale-balance"></span>
+        <!-- Mockup 1 -->
+        <div class="group relative rounded-3xl overflow-hidden bg-[#0A0A0A] border border-white/5 aspect-[4/3]">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent z-10"></div>
+          <!-- Ensure image paths are correct relative to your folder -->
+          <img src="images/dashboard+pay/showcase-payment.png" alt="Dashboard UI" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+          <div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+            <h3 class="font-display text-2xl font-bold mb-1">Instant Payment Dashboard</h3>
+            <p class="text-sm text-gray-400">One-tap actions for recurring users.</p>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Ambition vs. Scope</h3>
-          <p class="text-gray-600 dark:text-gray-300">Learned to focus on stakeholder priorities rather than trying to implement every possible feature.</p>
         </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-4">
-            <span class="iconify text-2xl text-blue-600 dark:text-blue-400" data-icon="mdi:currency-usd"></span>
+
+        <!-- Mockup 2 -->
+        <div class="group relative rounded-3xl overflow-hidden bg-[#0A0A0A] border border-white/5 aspect-[4/3]">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent z-10"></div>
+          <img src="images/onboard/showcase-onboard.png" alt="Onboarding UI" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+          <div class="absolute bottom-0 left-0 p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform">
+            <h3 class="font-display text-2xl font-bold mb-1">Contextual Onboarding</h3>
+            <p class="text-sm text-gray-400">Reducing cognitive load for non-tech locals.</p>
           </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Revenue Focus</h3>
-          <p class="text-gray-600 dark:text-gray-300">Discovered that revenue mattered more to stakeholders than UX improvements alone.</p>
-        </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-4">
-            <span class="iconify text-2xl text-green-600 dark:text-green-400" data-icon="mdi:reload"></span>
-          </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Iteration Power</h3>
-          <p class="text-gray-600 dark:text-gray-300">Cutting features actually strengthened the app and improved the final product.</p>
-        </div>
-        
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
-            <span class="iconify text-2xl text-purple-600 dark:text-purple-400" data-icon="mdi:account-accessibility"></span>
-          </div>
-          <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-white">Accessibility Matters</h3>
-          <p class="text-gray-600 dark:text-gray-300">Elderly users need tailored solutions with larger text and simpler interfaces.</p>
         </div>
       </div>
     </section>
 
-    <!-- Visuals -->
-    <section class="animate-on-scroll">
-      <div class="text-center mb-16">
-        <h2 class="text-3xl font-bold mb-4 text-gray-800 dark:text-white">
-          Visuals
-        </h2>
-        <div class="w-24 h-1 bg-pink-500 mx-auto rounded-full mb-8"></div>
+    <!-- Data & Interactive Charts -->
+    <section class="max-w-5xl mx-auto mb-32 reveal">
+      <div class="flex items-center gap-4 mb-12">
+        <h2 class="font-display text-3xl font-bold">The Metrics</h2>
+        <div class="h-px flex-1 bg-gradient-to-r from-gray-800 to-transparent"></div>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8 mb-12">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <img 
-            src="images/dashboard+pay/showcase-payment.png" 
-            alt="Payment Dashboard Showcase"
-            class="w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-            loading="lazy"
-          >
-          <div class="mt-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Payment Dashboard</h3>
-            <p class="text-gray-600 dark:text-gray-300">Streamlined payment interface showing real-time parking status and payment options.</p>
+      <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Time Reduction -->
+        <div class="glass-card p-6 rounded-2xl lg:col-span-1">
+          <h3 class="text-gray-400 text-sm font-medium uppercase mb-4">Time to Park</h3>
+          <div class="h-48 relative">
+            <canvas id="timeChart"></canvas>
           </div>
+          <p class="mt-4 text-xs text-gray-500">Drastic reduction in user flow duration.</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <img 
-            src="images/onboard/showcase-onboard.png" 
-            alt="Onboarding Showcase"
-            class="w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-            loading="lazy"
-          >
-          <div class="mt-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">User Onboarding</h3>
-            <p class="text-gray-600 dark:text-gray-300">Intuitive onboarding flow that guides new users through the app's features and benefits.</p>
+        <!-- Satisfaction Radar -->
+        <div class="glass-card p-6 rounded-2xl lg:col-span-2">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-gray-400 text-sm font-medium uppercase">User Satisfaction</h3>
+            <span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded border border-green-500/20">NPS: +64</span>
+          </div>
+          <div class="h-48 w-full">
+            <canvas id="satisfactionChart"></canvas>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Retrospective -->
+    <section class="max-w-4xl mx-auto mb-32 reveal">
+      <h2 class="font-display text-3xl font-bold mb-8">Retrospective</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="border-l-2 border-brand-500 pl-6">
+          <h3 class="text-white font-bold mb-2">Revenue > UX?</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            I learned that for stakeholders, UX is a means to an end. By pivoting the pitch from "prettier interface" to "revenue recovery," buy-in was immediate.
+          </p>
+        </div>
+        <div class="border-l-2 border-purple-500 pl-6">
+          <h3 class="text-white font-bold mb-2">The MVP Trap</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Initial designs were feature-bloated. Cutting 40% of the features actually increased the payment success rate by removing distractions.
+          </p>
+        </div>
+      </div>
+
+      <!-- Bottom CTA for Medium -->
+      <div class="mt-16 text-center">
+        <p class="text-gray-500 mb-4 text-sm">Want to see the deep dive on the design process?</p>
+        <a href="https://medium.com/design-bootcamp/from-frustration-to-flow-how-i-designed-a-digital-parking-solution-75b9019a3f32" target="_blank" 
+           class="inline-flex items-center gap-2 text-brand-500 hover:text-brand-400 font-medium transition-colors border-b border-brand-500/30 hover:border-brand-500">
+          Read the full article on Medium
+          <span class="iconify" data-icon="heroicons:arrow-up-right"></span>
+        </a>
       </div>
     </section>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="max-w-6xl mx-auto px-6 py-12 text-center">
-    <div class="border-t border-gray-200 dark:border-gray-700 pt-8">
-      <p class="text-gray-500 dark:text-gray-400"> 2025 | Designed & Developed with <span class="iconify inline-block text-red-500" data-icon="mdi:heart"></span></p>
+  <!-- Clean Footer -->
+  <footer class="border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-gray-500 text-sm">© 2025 Case Study</div>
+      <div class="flex gap-6">
+        <a href="https://www.linkedin.com/in/stefan-trajanovski-0b1b3b1b3/" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+        <a href="https://github.com/StefanTrajanovski" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+        <a href="mailto:your-email@example.com" class="text-brand-500 font-medium hover:text-brand-400 transition-colors">Contact Me</a>
+      </div>
     </div>
   </footer>
 
+  <!-- Scripts -->
+  <script>
+    // Reveal on Scroll Observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Chart Configuration (Modernized)
+    Chart.defaults.color = '#737373';
+    Chart.defaults.font.family = 'Inter';
+
+    // Time Chart
+    new Chart(document.getElementById('timeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Old SMS', 'New App'],
+        datasets: [{
+          data: [120, 25],
+          backgroundColor: ['#262626', '#0ea5e9'],
+          borderRadius: 4,
+          barThickness: 40
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { grid: { display: false }, ticks: { display: false } }
+        }
+      }
+    });
+
+    // Radar Chart
+    new Chart(document.getElementById('satisfactionChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Ease', 'Speed', 'Design', 'Reliability', 'Features'],
+        datasets: [{
+          label: 'User Score',
+          data: [9, 8, 8.5, 9.2, 7.8],
+          backgroundColor: 'rgba(14, 165, 233, 0.2)',
+          borderColor: '#0ea5e9',
+          pointBackgroundColor: '#0ea5e9',
+          pointBorderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          r: {
+            angleLines: { color: 'rgba(255,255,255,0.05)' },
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            pointLabels: { color: '#a3a3a3', font: { size: 11 } },
+            ticks: { display: false, backdropColor: 'transparent' }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
