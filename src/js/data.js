@@ -28,6 +28,18 @@ export const clientProjects = [
     liveUrl: null,  
     cover: 'client-projects/parking-app/images/3-screens/showcase-3-screens.png'
   },
+  { id: "qr-restaurant",
+    title: "QR-Based Ordering Ecosystem",
+    description: "Designed a sales-ready MVP for restaurant automation. Focused on service design architecture to enable pre-order validation and rapid sales cycles.",
+    tags: ["Service Design", "Architecture", "Figma Systems", "Sales-Ready MVP"],
+    type: 'client',
+    live: false,
+    openSource: false,
+    repoUrl: null,
+    liveUrl: null,
+    caseStudyPath: "/client-projects/qr-restaurant/" ,
+    cover: "assets/covers/qr-cover.png"
+  },
   {
     title: 'K&I',
     description: 'full branding for a fashion brand',
@@ -43,6 +55,18 @@ export const clientProjects = [
 ];
 
 export const personalProjects = [
+  {
+    title: "Reliability-First Weather IoT",
+    description: "Engineered a custom hardware weather station and React dashboard to solve local data inaccuracy, ensuring 100% reliable UX for weather-sensitive activities.",
+    tags: ["Full-Stack", "IoT", "Data Engineering", "UX Research"],
+    type: 'personal',
+    live: false,
+    openSource: true,
+    repo: "null",
+    liveUrl: "null",
+    caseStudyPath: "personal-projects/weather-station/index.html",
+    cover: "assets/covers/weather-thumbnail.png"
+  },
   {
     title: 'Workout App',
     description: 'a workout app for tracking your workouts and progress',
@@ -80,25 +104,25 @@ export const personalProjects = [
 
 export const services = [
   {
-    icon: 'ph:rocket-duotone',
+    icon: 'ph:lightning-duotone',
     title: 'Rapid Prototyping',
-    description: 'Clickable, high-fidelity prototypes that validate product direction fast.'
+    description: 'Clickable, high-fidelity prototypes built in Figma or Code to validate product direction and secure stakeholder buy-in fast.'
   },
   {
     icon: 'ph:stack-duotone',
     title: 'Design Systems',
-    description: 'Token-driven systems with Tailwind that scale across products.'
+    description: 'Scalable, token-driven Figma systems that bridge the gap to Tailwind CSS, ensuring 1:1 consistency between design and production.'
   },
   {
     icon: 'ph:wheelchair-motion-duotone',
     title: 'Accessible Frontends',
-    description: 'A11y-first UIs with robust interactions and performance.'
+    description: 'Full-stack frontend implementation with a focus on accessibility (A11y), performance, and clean, modular ES6+ architecture.'
   }
 ];
 
 export const processSteps = [
   { step: 1, title: 'Discover', description: 'Goals, constraints, and user needs.' },
-  { step: 2, title: 'Design', description: 'Flows, wireframes, and UI system.' },
+  { step: 2, title: 'Design', description: 'Architecting flows and building scalable Figma design systems.' },
   { step: 3, title: 'Prototype', description: 'Interactive UI with realistic data.' },
   { step: 4, title: 'Validate', description: 'User testing and iteration.' }
 ];

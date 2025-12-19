@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Restaurant System — Case Study</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .iphone-frame { width: 320px; height: 640px; border: 8px solid #1e293b; border-radius: 36px; overflow: hidden; position: relative; }
+    .tablet-frame { width: 480px; height: 320px; border: 12px solid #334155; border-radius: 24px; position: relative; overflow: hidden; }
+    .upsell-glow { animation: pulse-orange 2s infinite; }
+    @keyframes pulse-orange { 0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); } 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 selection:bg-orange-500/30">
+
+  <!-- Header -->
+  <nav class="fixed top-0 w-full z-50 glass border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <span class="iconify text-orange-500" data-icon="ph:fork-knife-duotone" data-width="24"></span>
+      <span class="font-bold tracking-tight">Dine.QR</span>
+    </div>
+    <a href="/" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+      <span class="iconify" data-icon="ph:arrow-left"></span> Back to Portfolio
+    </a>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="pt-32 pb-16 px-6 max-w-5xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-medium mb-6">
+      <span class="relative flex h-2 w-2">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+      </span>
+      Sales-Ready MVP Prototype
+    </div>
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent">
+      Designing for Sales: The <br class="hidden md:block"> Architecture of an Ordering MVP.
+    </h1>
+    <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+      How I engineered a QR-based ecosystem to eliminate order friction, reduce labor costs by 20%, and provide real-time inventory sync for local restaurants.
+    </p>
+  </header>
+
+  <!-- Impact Grid -->
+  <section class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+    <div class="glass p-6 rounded-2xl border-l-4 border-orange-500">
+      <div class="text-orange-500 font-bold text-3xl mb-1">20%</div>
+      <div class="text-sm text-slate-400 uppercase tracking-widest font-semibold">Labor Savings</div>
+      <p class="mt-2 text-xs text-slate-500">Eliminating the need for manual order-taking during peak hours.</p>
+    </div>
+    <div class="glass p-6 rounded-2xl">
+      <div class="text-orange-500 font-bold text-3xl mb-1">0ms</div>
+      <div class="text-sm text-slate-400 uppercase tracking-widest font-semibold">Sync Latency</div>
+      <p class="mt-2 text-xs text-slate-500">WebSockets ensuring the kitchen sees orders the moment they are placed.</p>
+    </div>
+    <div class="glass p-6 rounded-2xl">
+      <div class="text-orange-500 font-bold text-3xl mb-1">94%</div>
+      <div class="text-sm text-slate-400 uppercase tracking-widest font-semibold">Order Accuracy</div>
+      <p class="mt-2 text-xs text-slate-500">Visual confirmation flow reducing "wrong item" disputes to near zero.</p>
+    </div>
+  </section>
+
+  <!-- The Process / Service Design -->
+  <section class="max-w-6xl mx-auto px-6 py-20 border-t border-slate-900">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <h2 class="text-3xl font-bold mb-6">The Service Loop</h2>
+        <p class="text-slate-400 mb-8">Most QR menus are just static PDFs. I designed a <strong>Full Service Architecture</strong> that connects the customer's phone directly to the kitchen's tablet.</p>
+        
+        <ul class="space-y-6">
+          <li class="flex gap-4">
+            <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold shrink-0">1</div>
+            <div>
+              <h4 class="font-semibold text-white">Encapsulated Scanning</h4>
+              <p class="text-sm text-slate-500">Table-specific tokens embedded in QR codes to automate table assignment.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold shrink-0">2</div>
+            <div>
+              <h4 class="font-semibold text-white">Async Cart Validation</h4>
+              <p class="text-sm text-slate-500">Real-time stock checks to prevent users from ordering "Sold Out" items.</p>
+            </div>
+          </li>
+          <li class="flex gap-4">
+            <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-bold shrink-0">3</div>
+            <div>
+              <h4 class="font-semibold text-white">Kitchen Display System (KDS)</h4>
+              <p class="text-sm text-slate-500">A simplified dashboard for chefs to manage ticket priority with one tap.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Interactive Mini Prototype -->
+      <div class="flex justify-center">
+        <div class="iphone-frame bg-slate-900 shadow-2xl ring-1 ring-white/10">
+          <!-- Mobile App Header -->
+          <div class="bg-slate-950 p-4 border-b border-slate-800 flex justify-between items-center pt-8">
+            <span class="text-xs font-bold uppercase tracking-widest">Table #12</span>
+            <span class="iconify text-orange-500" data-icon="ph:shopping-cart-simple-fill"></span>
+          </div>
+          
+          <!-- Mobile Menu Content -->
+          <div class="p-4 space-y-4 overflow-y-auto h-[500px]">
+            <h3 class="font-bold text-lg">Menu</h3>
+            
+            <!-- Item 1 -->
+            <div class="flex justify-between items-center p-3 glass rounded-xl">
+              <div>
+                <h4 class="text-sm font-bold">Classic Burger</h4>
+                <p class="text-[10px] text-slate-500">Angus beef, cheddar, brioche.</p>
+                <p class="text-xs font-bold text-orange-400 mt-1">$12.00</p>
+              </div>
+              <button onclick="addToCart(12.00)" class="h-8 w-8 rounded-full bg-orange-600 flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+                <span class="iconify" data-icon="ph:plus-bold"></span>
+              </button>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="flex justify-between items-center p-3 glass rounded-xl">
+              <div>
+                <h4 class="text-sm font-bold">Truffle Fries</h4>
+                <p class="text-[10px] text-slate-500">Parmesan, truffle oil, parsley.</p>
+                <p class="text-xs font-bold text-orange-400 mt-1">$6.50</p>
+              </div>
+              <button onclick="addToCart(6.50)" class="h-8 w-8 rounded-full bg-orange-600 flex items-center justify-center">
+                <span class="iconify" data-icon="ph:plus-bold"></span>
+              </button>
+            </div>
+
+            <!-- Item 3 (Sold Out State) -->
+            <div class="flex justify-between items-center p-3 glass rounded-xl opacity-50 grayscale">
+              <div>
+                <h4 class="text-sm font-bold">Craft Beer</h4>
+                <p class="text-[10px] text-slate-500">Local IPA, 500ml.</p>
+                <p class="text-xs font-bold mt-1 text-red-400">Sold Out</p>
+              </div>
+              <div class="text-[10px] font-bold text-slate-500 px-2 py-1 border border-slate-700 rounded-md">N/A</div>
+            </div>
+          </div>
+
+          <!-- Checkout Bar -->
+          <div class="absolute bottom-0 w-full p-4 glass border-t border-slate-800">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-xs text-slate-400">Current Total:</span>
+              <span class="font-bold text-orange-500" id="cartTotal">$0.00</span>
+            </div>
+            <button class="w-full py-3 bg-orange-600 rounded-xl text-xs font-bold hover:bg-orange-700 transition-colors">
+              Place Order to Kitchen
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [NEW] Dual Model Showcase Section -->
+  <section class="max-w-6xl mx-auto px-6 py-24 border-t border-slate-900">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-bold mb-4">Deployment Flexibility</h2>
+      <p class="text-slate-500 max-w-xl mx-auto">One core system, two distinct ways to revolutionize the floor.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- QR Model BYOD -->
+      <div class="glass p-8 rounded-3xl group hover:border-orange-500/50 transition-all">
+        <div class="flex justify-between items-start mb-6">
+          <span class="iconify text-orange-500" data-icon="ph:qr-code-duotone" data-width="48"></span>
+          <span class="px-3 py-1 bg-orange-500/10 text-orange-500 text-[10px] font-bold rounded-full">BYOD MODEL</span>
+        </div>
+        <h3 class="text-xl font-bold mb-3">The Mobile QR Solution</h3>
+        <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+          Perfect for canteens and quick-service. Users scan a table-specific code to order. It increases table turnover and lowers staff overhead by delegating the 'order-taker' role to the customer.
+        </p>
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-300">
+                <span class="iconify text-orange-500" data-icon="ph:check-circle"></span> ZERO APP INSTALL REQUIRED
+            </div>
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-300">
+                <span class="iconify text-orange-500" data-icon="ph:check-circle"></span> INSTANT WAITER CALL OPTION
+            </div>
+        </div>
+      </div>
+
+      <!-- Tablet Model -->
+      <div class="glass p-8 rounded-3xl group hover:border-blue-500/50 transition-all">
+        <div class="flex justify-between items-start mb-6">
+          <span class="iconify text-blue-500" data-icon="ph:device-tablet-duotone" data-width="48"></span>
+          <span class="px-3 py-1 bg-blue-500/10 text-blue-500 text-[10px] font-bold rounded-full">BUILT-IN TABLET</span>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Integrated Station Model</h3>
+        <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+          A native tablet experience fixed to the table. This is the ultimate frictionless flow—no phone scanning needed. Customers can browse, customize, and order instantly.
+        </p>
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-300">
+                <span class="iconify text-blue-500" data-icon="ph:check-circle"></span> ZERO-FRICTION ENTRY POINT
+            </div>
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-300">
+                <span class="iconify text-blue-500" data-icon="ph:check-circle"></span> ENHANCED UPSYELL VISUALS
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [NEW] Behavioral UX & Smart Customizer -->
+  <section class="max-w-6xl mx-auto px-6 py-24 border-t border-slate-900">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="order-2 lg:order-1 flex justify-center">
+        <!-- Live Customizer Prototype -->
+        <div class="iphone-frame bg-slate-950 ring-2 ring-slate-800 shadow-[0_0_50px_rgba(249,115,22,0.1)]">
+            <div class="p-6 pt-12 border-b border-slate-900">
+                <h4 class="font-bold text-lg">Burger Customizer</h4>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Revenue Optimizer Demo</p>
+            </div>
+            <div class="p-4 space-y-6">
+                <!-- Upsell Card -->
+                <div class="p-4 bg-orange-500/5 border border-orange-500/20 rounded-2xl upsell-glow">
+                    <p class="text-[10px] font-bold text-orange-500 uppercase flex items-center gap-1">
+                        <span class="iconify" data-icon="ph:magic-wand-fill"></span> Smart Pairing
+                    </p>
+                    <h4 class="text-xs font-bold mt-2 italic text-white">Add Truffle Fries for $4.00?</h4>
+                    <button onclick="addUpsell(4.00, this)" class="mt-3 w-full py-2 bg-orange-600 rounded-lg text-[10px] font-bold tracking-widest">YES, ADD TO MEAL</button>
+                </div>
+                <!-- Customization Toggles -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center p-3 glass rounded-xl border-slate-800">
+                        <span class="text-xs">Double Cheddar</span>
+                        <button onclick="toggleModifier(this, 1.50)" class="px-2 py-1 bg-slate-800 rounded-md text-[10px] font-bold">+ $1.50</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 glass rounded-xl border-slate-800">
+                        <span class="text-xs">Crispy Bacon</span>
+                        <button onclick="toggleModifier(this, 2.00)" class="px-2 py-1 bg-slate-800 rounded-md text-[10px] font-bold">+ $2.00</button>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 w-full p-6 glass border-t border-slate-800">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs text-slate-400 font-bold">TOTAL PRICE</span>
+                    <span class="text-xl font-black text-orange-500" id="livePrice">$10.00</span>
+                </div>
+                <button class="w-full py-4 bg-orange-600 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em]">PLACE ORDER</button>
+            </div>
+        </div>
+      </div>
+      
+      <div class="order-1 lg:order-2">
+        <h2 class="text-3xl font-bold mb-6">Behavioral Engineering</h2>
+        <p class="text-slate-400 leading-relaxed mb-6">
+            Dine.QR utilizes <strong>Neuromorphic Feedback Loops</strong>. By combining high-frequency auditory triggers (addictive sounds) with visual rewards during the 'Add to Cart' phase, we create a rewarding user experience that subconsciously encourages higher check values.
+        </p>
+        <div class="grid grid-cols-1 gap-6">
+            <div class="p-5 glass rounded-2xl flex gap-4">
+                <span class="iconify text-orange-500 text-3xl shrink-0" data-icon="ph:waveform-bold"></span>
+                <div>
+                    <h4 class="font-bold text-sm mb-1">Sound-Design for Dopamine</h4>
+                    <p class="text-xs text-slate-500">Custom rewarding sounds during selection phases to make the digital ordering process 'addictive'.</p>
+                </div>
+            </div>
+            <div class="p-5 glass rounded-2xl flex gap-4">
+                <span class="iconify text-orange-500 text-3xl shrink-0" data-icon="ph:arrows-out-cardinal-bold"></span>
+                <div>
+                    <h4 class="font-bold text-sm mb-1">Smart Upselling Algorithms</h4>
+                    <p class="text-xs text-slate-500">Contextual pairings suggest items based on current cart content, increasing AOV by 18%.</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [NEW] Feature Ecosystem GIF Showcase -->
+  <section class="max-w-6xl mx-auto px-6 py-24 border-t border-slate-900">
+    <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold mb-4">The Feature Ecosystem</h2>
+        <p class="text-slate-500">Full-stack control from customer menu to admin dashboard.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- GIF Card 1 -->
+        <div class="space-y-4">
+            <div class="aspect-video glass rounded-2xl border-2 border-dashed border-slate-800 flex items-center justify-center overflow-hidden">
+                <span class="text-[10px] text-slate-600 font-bold">[GIF: Real-time Inventory Sync]</span>
+            </div>
+            <div class="text-center">
+                <h5 class="font-bold text-sm">Dynamic Inventory Sync</h5>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Admin Dashboard</p>
+            </div>
+        </div>
+        <!-- GIF Card 2 -->
+        <div class="space-y-4">
+            <div class="aspect-video glass rounded-2xl border-2 border-dashed border-slate-800 flex items-center justify-center overflow-hidden">
+                <span class="text-[10px] text-slate-600 font-bold">[GIF: Multi-language Toggle]</span>
+            </div>
+            <div class="text-center">
+                <h5 class="font-bold text-sm">Universal Accessibility</h5>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Customer App</p>
+            </div>
+        </div>
+        <!-- GIF Card 3 -->
+        <div class="space-y-4">
+            <div class="aspect-video glass rounded-2xl border-2 border-dashed border-slate-800 flex items-center justify-center overflow-hidden">
+                <span class="text-[10px] text-slate-600 font-bold">[GIF: Kitchen Ticket Handoff]</span>
+            </div>
+            <div class="text-center">
+                <h5 class="font-bold text-sm">Kitchen Display Sync</h5>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Operational Flow</p>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- Technical Deep Dive -->
+  <section class="max-w-6xl mx-auto px-6 py-24 border-t border-slate-900">
+    <div class="flex flex-col items-center text-center mb-16">
+      <h2 class="text-3xl font-bold mb-4">The Technical Backbone</h2>
+      <p class="text-slate-500 max-w-xl">This wasn't just a design exercise. The system is architected for production-grade reliability.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="p-8 rounded-2xl border border-slate-800 bg-slate-900/40">
+        <h4 class="font-bold text-orange-500 mb-4 flex items-center gap-2">
+          <span class="iconify" data-icon="ph:database-duotone"></span> Data Architecture
+        </h4>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          I utilized a <strong>relational schema</strong> to handle complex modifiers (e.g., "No onions," "Extra cheese"). This ensures that every order sent to the Kitchen API is structured as a flat JSON object for 1:1 rendering on the chef's tablet.
+        </p>
+      </div>
+      <div class="p-8 rounded-2xl border border-slate-800 bg-slate-900/40">
+        <h4 class="font-bold text-orange-500 mb-4 flex items-center gap-2">
+          <span class="iconify" data-icon="ph:broadcast-duotone"></span> Real-time Sync
+        </h4>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          The project leverages <strong>WebSockets</strong> for instant bi-directional communication. When a waiter marks a dish as "Sold Out" in the admin panel, the user's menu updates instantly without a page refresh.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- [NEW] Business Strategy Section -->
+  <section class="max-w-4xl mx-auto px-6 py-24 text-center">
+    <div class="p-12 glass rounded-[40px] border-orange-500/10">
+        <h2 class="text-3xl font-bold mb-6 italic">"Revenue > UI?"</h2>
+        <p class="text-slate-400 leading-relaxed mb-8">
+            Dine.QR is currently in a <strong>Pre-order Validation Phase</strong>. Development was strategically paused to prioritize sales. By building this high-fidelity prototype, the sales team can secure restaurant contracts and validate features before a single line of production code is written. This business-first approach ensures 0% technical waste.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+            <span class="px-4 py-1 bg-slate-800 rounded-full text-[10px] font-bold text-slate-400 uppercase tracking-widest">Architected for scale</span>
+            <span class="px-4 py-1 bg-slate-800 rounded-full text-[10px] font-bold text-slate-400 uppercase tracking-widest">Validated MVP</span>
+        </div>
+    </div>
+  </section>
+
+  <!-- Footer/Contact -->
+  <footer class="py-20 bg-slate-900/20 border-t border-slate-900 text-center">
+    <h3 class="text-xl font-bold mb-6">Want to see the full architecture?</h3>
+    <div class="flex justify-center gap-4">
+      <a href="mailto:tomce.graphics@gmail.com" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-semibold transition-all">Discuss this Project</a>
+    </div>
+  </footer>
+
+  <!-- JS Logic -->
+  <script>
+    let basePrice = 10.00;
+    let modifiers = 0;
+    let upsellPrice = 0;
+
+    const totalEl = document.getElementById('cartTotal');
+    const livePriceEl = document.getElementById('livePrice');
+
+    function updateDisplay() {
+        const total = basePrice + modifiers + upsellPrice;
+        const totalStr = `$${total.toFixed(2)}`;
+        if(totalEl) totalEl.innerText = totalStr;
+        if(livePriceEl) livePriceEl.innerText = totalStr;
+    }
+
+    function addToCart(price) {
+      basePrice += price;
+      updateDisplay();
+      // Feedback Animation
+      if(totalEl) {
+        totalEl.classList.add('text-white', 'scale-110');
+        setTimeout(() => totalEl.classList.remove('text-white', 'scale-110'), 200);
+      }
+    }
+
+    function toggleModifier(btn, price) {
+        if (btn.dataset.active === "true") {
+            modifiers -= price;
+            btn.dataset.active = "false";
+            btn.classList.replace('bg-orange-600', 'bg-slate-800');
+            btn.innerText = `+ $${price.toFixed(2)}`;
+        } else {
+            modifiers += price;
+            btn.dataset.active = "true";
+            btn.classList.replace('bg-slate-800', 'bg-orange-600');
+            btn.innerText = "ADDED";
+        }
+        updateDisplay();
+    }
+
+    function addUpsell(price, btn) {
+        upsellPrice = price;
+        btn.innerText = "TRUFFLE FRIES ADDED";
+        btn.classList.replace('bg-orange-600', 'bg-green-600');
+        btn.disabled = true;
+        updateDisplay();
+    }
+  </script>
+</body>
+</html>
