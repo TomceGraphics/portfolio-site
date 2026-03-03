@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth bg-[#FAFAFA]">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocMatch | HCI & UX Case Study</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- GSAP & Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #0f172a;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Ambient & Technical Backgrounds */
+        .bg-grid-pattern {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 32px 32px;
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        .glow-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism */
+        .glass-nav {
+            background: rgba(250, 250, 250, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #FAFAFA;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Typography Polish */
+        .text-balance {
+            text-wrap: balance;
+        }
+
+        /* UI Image Hover Effects */
+        .ui-showcase-img {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .ui-showcase-container:hover .ui-showcase-img {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Data Flow Animation */
+        .flow-line {
+            background: linear-gradient(90deg, transparent, #2563eb, transparent);
+            background-size: 200% 100%;
+            animation: flow 2s linear infinite;
+        }
+
+        @keyframes flow {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Grid Background -->
+    <div class="fixed inset-0 bg-grid-pattern opacity-40 pointer-events-none z-[-2]"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full top-0 z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="https://thomas-graphics.netlify.app/"
+                class="font-bold tracking-tight flex items-center gap-3 text-slate-900 hover:opacity-70 transition-opacity">
+                <div
+                    class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-md">
+                    TG</div>
+                Thomas Graphics <span class="text-slate-400 font-normal hidden sm:inline">| HCI Portfolio</span>
+            </a>
+            <div class="flex items-center gap-6">
+                <a href="https://github.com/TomceGraphics/SymptomLink" target="_blank"
+                    class="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">Repository</a>
+                <a href="https://symptomlink.netlify.app/" target="_blank"
+                    class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-95 flex items-center gap-2">
+                    Live Demo <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-48 pb-32 px-6 max-w-6xl mx-auto text-center reveal-up">
+        <div class="glow-orb top-0 left-1/2 -translate-x-1/2"></div>
+
+        <div
+            class="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-bold text-slate-600 mb-8 shadow-sm">
+            <span class="relative flex h-2 w-2 mr-2">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            DocMatch Prototype
+        </div>
+
+        <h1
+            class="text-6xl md:text-8xl font-extrabold tracking-tighter mb-8 text-slate-900 leading-[1.05] text-balance">
+            Eradicating the <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Specialization
+                Barrier.</span>
+        </h1>
+
+        <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-16 font-medium leading-relaxed text-balance">
+            An AI-driven triage system that translates raw human experiences into exact medical vectors, completely
+            removing the cognitive burden of patient self-diagnosis.
+        </p>
+
+        <!-- Project Meta / Specs -->
+        <div
+            class="flex flex-wrap justify-center gap-12 text-sm max-w-4xl mx-auto bg-white/60 backdrop-blur-md border border-slate-200 rounded-3xl p-8 shadow-sm">
+            <div class="flex flex-col items-center"><span
+                    class="text-slate-400 uppercase tracking-widest text-[10px] font-bold mb-2">Discipline</span><span
+                    class="font-bold text-slate-800">HCI / UX Engineering</span></div>
+            <div class="flex flex-col items-center"><span
+                    class="text-slate-400 uppercase tracking-widest text-[10px] font-bold mb-2">Frontend</span><span
+                    class="font-bold text-slate-800">Vanilla JS + Tailwind</span></div>
+            <div class="flex flex-col items-center"><span
+                    class="text-slate-400 uppercase tracking-widest text-[10px] font-bold mb-2">LLM Engine</span><span
+                    class="font-bold text-slate-800">Gemini 2.5 Flash</span></div>
+            <div class="flex flex-col items-center"><span
+                    class="text-slate-400 uppercase tracking-widest text-[10px] font-bold mb-2">Backend</span><span
+                    class="font-bold text-slate-800">Supabase</span></div>
+        </div>
+    </section>
+
+    <!-- The Problem: Cognitive Friction -->
+    <section class="py-32 bg-white border-y border-slate-100 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
+            <div class="reveal-up">
+                <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-4">The HCI Problem</div>
+                <h2 class="text-4xl font-bold mb-6 tracking-tight text-slate-900 leading-tight">High Cognitive Load
+                    During Medical Distress</h2>
+                <p class="text-slate-500 mb-8 leading-relaxed text-lg">
+                    When individuals experience symptoms, their cognitive capacity is inherently lowered due to stress.
+                    Traditional hospital directories ignore this, requiring patients to possess high medical literacy
+                    just to select the right department.
+                </p>
+                <div class="pl-6 border-l-2 border-blue-500">
+                    <p class="text-slate-800 font-medium italic">
+                        "DocMatch shifts the translation burden from the human to the machine. You type how you feel;
+                        the system handles the complex medical routing."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Custom Data Visualization -->
+            <div
+                class="reveal-up relative w-full aspect-video bg-slate-50 rounded-[2rem] border border-slate-200 p-8 shadow-inner flex flex-col justify-between">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 class="text-sm font-bold text-slate-800">User Cognitive Friction Over Time</h3>
+                    <div class="flex flex-col gap-2 text-[10px] font-bold uppercase tracking-widest text-right">
+                        <span class="text-slate-400 flex items-center justify-end gap-2">Legacy Flow <div
+                                class="w-3 h-3 rounded-full bg-slate-300"></div></span>
+                        <span class="text-blue-600 flex items-center justify-end gap-2">DocMatch AI <div
+                                class="w-3 h-3 rounded-full bg-blue-500"></div></span>
+                    </div>
+                </div>
+                <div class="relative flex-1 w-full mt-4">
+                    <canvas id="cognitiveChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Sandbox (Show, Don't Tell) -->
+    <section class="py-32 relative overflow-hidden bg-slate-50">
+        <div class="max-w-5xl mx-auto px-6 relative z-10 reveal-up text-center">
+            <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-4">Live Demonstration</div>
+            <h2 class="text-4xl font-bold mb-6 tracking-tight text-slate-900">Experience the Tokenizer</h2>
+            <p class="text-slate-500 max-w-2xl mx-auto mb-16 text-lg">
+                This is the actual component deployed in production. Try simulating a patient's natural language input
+                to see how the system maps unstructured text to a specialist.
+            </p>
+
+            <!-- Embedded Platform Component -->
+            <div
+                class="bg-white rounded-[2.5rem] p-6 md:p-12 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] border border-slate-200 max-w-3xl mx-auto text-left relative overflow-hidden">
+
+                <!-- Main Input UI exactly as it looks in the app -->
+                <div
+                    class="group relative flex flex-col rounded-3xl border border-slate-200 bg-slate-50/50 shadow-inner transition-all duration-300 focus-within:border-blue-400 focus-within:bg-white focus-within:shadow-lg">
+                    <textarea id="demoInput" placeholder="Tell me how you’re feeling..."
+                        class="min-h-[100px] w-full resize-none bg-transparent px-6 py-6 text-lg text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                        oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>
+
+                    <div class="flex items-center justify-between px-4 pb-3 pt-2">
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="h-10 w-10 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"><i
+                                    class="fa-solid fa-microphone"></i></button>
+                            <div class="h-4 w-px bg-slate-200 mx-1"></div>
+                            <div
+                                class="flex items-center gap-2 h-9 pl-3 pr-4 rounded-full text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-100">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Natural Language</span>
+                            </div>
+                        </div>
+                        <button id="demoBtn"
+                            class="h-11 w-11 inline-flex items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md hover:bg-blue-700 transition-all duration-200 active:scale-90">
+                            <i class="fa-solid fa-arrow-up text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fake Terminal Processing Line -->
+                <div id="demoStatus"
+                    class="mt-6 flex items-center gap-3 opacity-0 transition-opacity duration-300 px-2">
+                    <div class="w-4 h-4 rounded-full border-2 border-blue-200 border-t-blue-600 animate-spin"></div>
+                    <span class="text-xs font-bold text-slate-500 font-mono" id="demoStatusText">Tokenizing input
+                        vector...</span>
+                </div>
+
+                <!-- Results Output Grid -->
+                <div id="demoResults" class="mt-8 hidden animate-[fadeIn_0.5s_ease-out]">
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">AI Match Found</h3>
+                        <span class="text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-md">98%
+                            Confidence</span>
+                    </div>
+                    <!-- Sample Card -->
+                    <div
+                        class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <img src="https://i.pravatar.cc/150?u=sarah" class="w-12 h-12 rounded-xl object-cover">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Dr. Sarah Chen</h4>
+                                <p class="text-xs text-blue-600 font-bold uppercase tracking-wider">Neurologist</p>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full sm:w-auto px-5 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 transition-colors">Book
+                            Now</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- The Ecosystem (UI Screenshot Gallery) -->
+    <section class="py-32 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal-up">
+                <div class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-4">Complete Architecture
+                </div>
+                <h2 class="text-4xl font-bold mb-6 tracking-tight text-slate-900">A Unified Provider Ecosystem</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    DocMatch is more than a patient frontend. It features a fully-fledged Provider Access portal, Doctor
+                    Dashboard, and Patient Record system, all synced via Supabase.
+                </p>
+            </div>
+
+            <!-- Bento Grid Showcase -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- Showcase Item 1: Booking Modal -->
+                <div
+                    class="ui-showcase-container bg-slate-50 rounded-[2rem] p-8 border border-slate-100 flex flex-col reveal-up">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Smart Scheduling</h3>
+                        <p class="text-sm text-slate-500">Conflict-free date and time selection seamlessly integrated
+                            into the AI matching flow.</p>
+                    </div>
+                    <!-- PLACEHOLDER FOR IMAGE 1 (New Appointment) -->
+                    <div class="mt-auto relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg">
+                        <img src="./assets/booking-modal.png" alt="Booking Modal UI"
+                            class="ui-showcase-img w-full h-auto object-cover"
+                            onerror="this.src='https://placehold.co/800x600/e2e8f0/64748b?text=Insert+Booking+Screenshot'">
+                    </div>
+                </div>
+
+                <!-- Showcase Item 2: Dashboard -->
+                <div
+                    class="ui-showcase-container bg-slate-50 rounded-[2rem] p-8 border border-slate-100 flex flex-col reveal-up">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Provider Dashboard</h3>
+                        <p class="text-sm text-slate-500">Real-time queue management, allowing specialists to see who is
+                            waiting and review AI triage notes.</p>
+                    </div>
+                    <!-- PLACEHOLDER FOR IMAGE 3 (Doctor Dashboard) -->
+                    <div class="mt-auto relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg">
+                        <img src="./assets/doctor-dashboard.png" alt="Dashboard UI"
+                            class="ui-showcase-img w-full h-auto object-cover"
+                            onerror="this.src='https://placehold.co/800x600/e2e8f0/64748b?text=Insert+Dashboard+Screenshot'">
+                    </div>
+                </div>
+
+                <!-- Showcase Item 3: Patient Overview -->
+                <div
+                    class="ui-showcase-container bg-slate-50 rounded-[2rem] p-8 border border-slate-100 flex flex-col reveal-up md:col-span-2 lg:col-span-1">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Patient Records</h3>
+                        <p class="text-sm text-slate-500">Detailed clinical overviews combining patient-reported
+                            symptoms with previous vital metrics.</p>
+                    </div>
+                    <!-- PLACEHOLDER FOR IMAGE 4 (Patient Overview) -->
+                    <div class="mt-auto relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg">
+                        <img src="./assets/patient-overview.png" alt="Patient Overview UI"
+                            class="ui-showcase-img w-full h-auto object-cover"
+                            onerror="this.src='https://placehold.co/800x600/e2e8f0/64748b?text=Insert+Patient+Modal+Screenshot'">
+                    </div>
+                </div>
+
+                <!-- Showcase Item 4: Login -->
+                <div
+                    class="ui-showcase-container bg-slate-50 rounded-[2rem] p-8 border border-slate-100 flex flex-col reveal-up md:col-span-2 lg:col-span-1">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Secure Access</h3>
+                        <p class="text-sm text-slate-500">Clean, friction-free authentication portals for medical staff
+                            and administrators.</p>
+                    </div>
+                    <!-- PLACEHOLDER FOR IMAGE 2 (Login) -->
+                    <div
+                        class="mt-auto relative rounded-2xl overflow-hidden border border-slate-200 shadow-lg flex justify-center items-center bg-[#f3f4f6] p-4">
+                        <img src="./assets/login.png" alt="Login UI"
+                            class="ui-showcase-img w-3/4 h-auto object-cover rounded-xl shadow-md"
+                            onerror="this.src='https://placehold.co/400x500/e2e8f0/64748b?text=Insert+Login+Screenshot'">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Engineering/Architecture -->
+    <section class="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 text-center reveal-up">
+            <div>
+                <div
+                    class="w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl mx-auto mb-6">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <h4 class="text-lg font-bold mb-3">Vanilla First</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">Built entirely without bulky frameworks. ES6+
+                    JavaScript handles complex state management, routing, and UI rendering instantly.</p>
+            </div>
+            <div>
+                <div
+                    class="w-12 h-12 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mx-auto mb-6">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+                <h4 class="text-lg font-bold mb-3">Supabase Backend</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">PostgreSQL integration ensures data persists securely
+                    across the patient booking portal and the provider dashboard in real-time.</p>
+            </div>
+            <div>
+                <div
+                    class="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mx-auto mb-6">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <h4 class="text-lg font-bold mb-3">Graceful AI Degradation</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">If the Gemini 2.5 API hits quota limits, the system
+                    seamlessly falls back to a custom local keyword-matching algorithm.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <footer class="py-24 bg-[#FAFAFA] border-t border-slate-200 text-center">
+        <div class="max-w-2xl mx-auto px-6 reveal-up">
+            <h2 class="text-3xl font-bold mb-6 text-slate-900 tracking-tight">Review the Codebase</h2>
+            <p class="text-slate-500 mb-10 text-lg">Interested in the logic behind the UI components or the AI vector
+                extraction? The entire project is open-source.</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://github.com/TomceGraphics/SymptomLink" target="_blank"
+                    class="px-8 py-4 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/20 active:scale-95">
+                    <i class="fab fa-github mr-2"></i> View Repository
+                </a>
+                <a href="https://thomas-graphics.netlify.app/"
+                    class="px-8 py-4 bg-white text-slate-700 border border-slate-200 rounded-full font-bold hover:bg-slate-50 hover:text-blue-600 transition-all shadow-sm">
+                    Back to Portfolio
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Add CSS keyframe for dynamic elements
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`;
+        document.head.appendChild(style);
+
+        // 1. GSAP Scroll Animations
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray('.reveal-up').forEach(function (elem) {
+            gsap.fromTo(elem,
+                { y: 50, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1.2, ease: "power4.out", scrollTrigger: { trigger: elem, start: "top 85%" } }
+            );
+        });
+
+        // 2. Chart.js Customization (Polished for Awwwards look)
+        const ctx = document.getElementById('cognitiveChart').getContext('2d');
+
+        // Gradient for chart fill
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)'); // Blue-600 20%
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Symptom Onset', 'Google Search', 'Self Diagnosis', 'Directory Navigation', 'Decision Made'],
+                datasets: [
+                    {
+                        label: 'Legacy Directory Flow',
+                        data: [20, 70, 95, 85, 40],
+                        borderColor: '#cbd5e1',
+                        borderWidth: 3,
+                        borderDash: [6, 6],
+                        tension: 0.4,
+                        pointBackgroundColor: '#FAFAFA',
+                        pointBorderColor: '#cbd5e1',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'DocMatch AI Flow',
+                        data: [20, 25, 15, 10, 5],
+                        borderColor: '#2563eb', // Tailwind blue-600
+                        backgroundColor: gradient,
+                        borderWidth: 4,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#2563eb',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleFont: { family: "'Inter', sans-serif", size: 13 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: { display: false, min: 0, max: 100 },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: "'Inter', sans-serif", size: 11, weight: '600' }, color: '#94a3b8' },
+                        border: { display: false }
+                    }
+                },
+                interaction: { mode: 'index', intersect: false }
+            }
+        });
+
+        // 3. Sandbox Demo Logic
+        const input = document.getElementById('demoInput');
+        const btn = document.getElementById('demoBtn');
+        const status = document.getElementById('demoStatus');
+        const statusText = document.getElementById('demoStatusText');
+        const results = document.getElementById('demoResults');
+
+        // Auto-type effect for demo discovery
+        setTimeout(() => {
+            const text = "I've had a really bad migraine and the light is hurting my eyes since this morning.";
+            let i = 0;
+            const typeWriter = setInterval(() => {
+                input.value += text.charAt(i);
+                input.style.height = 'auto';
+                input.style.height = input.scrollHeight + 'px';
+                i++;
+                if (i >= text.length) clearInterval(typeWriter);
+            }, 40);
+        }, 2000);
+
+        btn.addEventListener('click', () => {
+            if (!input.value) {
+                input.parentElement.classList.add('ring-2', 'ring-red-400');
+                setTimeout(() => input.parentElement.classList.remove('ring-2', 'ring-red-400'), 400);
+                return;
+            }
+
+            // UI Reset
+            results.classList.add('hidden');
+            status.classList.remove('opacity-0');
+
+            // Sequence simulation
+            setTimeout(() => { statusText.innerText = "Extracting vectors: [migraine, photophobia]"; }, 600);
+            setTimeout(() => { statusText.innerText = "Querying Specialist Database..."; }, 1400);
+
+            setTimeout(() => {
+                status.classList.add('opacity-0');
+                statusText.innerText = "Tokenizing input vector..."; // reset
+                results.classList.remove('hidden');
+            }, 2200);
+        });
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); btn.click(); }
+        });
+    </script>
+</body>
+
+</html>

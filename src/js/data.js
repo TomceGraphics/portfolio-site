@@ -25,10 +25,11 @@ export const clientProjects = [
     live: false,
     caseStudyPath: 'client-projects/parking-app/',
     repoUrl: null,
-    liveUrl: null,  
+    liveUrl: null,
     cover: 'client-projects/parking-app/images/3-screens/showcase-3-screens.png'
   },
-  { id: "qr-restaurant",
+  {
+    id: "qr-restaurant",
     title: "QR-Based Ordering Ecosystem",
     description: "Designed a sales-ready MVP for restaurant automation. Focused on service design architecture to enable pre-order validation and rapid sales cycles.",
     tags: ["Service Design", "Architecture", "Figma Systems", "Sales-Ready MVP"],
@@ -37,7 +38,7 @@ export const clientProjects = [
     openSource: false,
     repoUrl: null,
     liveUrl: null,
-    caseStudyPath: "/client-projects/qr-restaurant/" ,
+    caseStudyPath: "/client-projects/qr-restaurant/",
     cover: "assets/covers/qr-cover.png"
   },
   {
@@ -55,6 +56,18 @@ export const clientProjects = [
 ];
 
 export const personalProjects = [
+  {
+    title: "DocMatch: AI Triage Engine",
+    description: "An AI-driven healthcare platform that translates natural language symptoms into precise medical routing, eliminating the cognitive burden of self-diagnosis.",
+    tags: ["UX Engineering", "Frontend Development", "HCI Design", "UI/UX Design", "AI / LLM Integration"],
+    type: 'personal',
+    openSource: false,
+    live: false,
+    caseStudyPath: 'personal-projects/docMatch/index.html',
+    repoUrl: null,
+    liveUrl: null,
+    cover: 'assets/covers/docmatch-cover.png'
+  },
   {
     title: "Reliability-First Weather IoT",
     description: "Engineered a custom hardware weather station and React dashboard to solve local data inaccuracy, ensuring 100% reliable UX for weather-sensitive activities.",
@@ -81,7 +94,7 @@ export const personalProjects = [
   {
     title: 'Prompt Library',
     description: 'a prompt library for ai',
-    tags: ['Open Source', 'tailwind', 'figma' , 'ai', 'ui/ux design'],
+    tags: ['Open Source', 'tailwind', 'figma', 'ai', 'ui/ux design'],
     type: 'personal',
     openSource: true,
     live: true,
@@ -92,7 +105,7 @@ export const personalProjects = [
   {
     title: 'Graph Visualizer',
     description: 'A lightweight, browser-based graph visualizer designed to help students and developers visualize graphs and practice graph algorithms.',
-    tags: ['Open Source', 'tailwind', 'figma', 'ui/ux design','graph visualization'],
+    tags: ['Open Source', 'tailwind', 'figma', 'ui/ux design', 'graph visualization'],
     type: 'personal',
     openSource: true,
     live: false,
