@@ -1,3 +1,5 @@
+Navbar.js
+```
 export function initNavbar() {
     // Create header element
     const header = document.createElement('header');
@@ -142,3 +144,112 @@ export function initNavbar() {
       });
     });
   }
+```
+
+ProfuleCard.js
+```
+export function renderProfileCard(container, profile) {
+  container.innerHTML = `
+    <div class="flex items-start gap-4">
+      <img src="/assets/img/profilePic.png" alt="${profile.name} avatar" class="h-16 w-16 rounded-xl ring-2 ring-brand-200 dark:ring-brand-800 object-cover" />
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight">${profile.name}</h1>
+        <p class="text-brand-600 dark:text-brand-400 font-medium">${profile.role}</p>
+      </div>
+    </div>
+    <p class="mt-4 text-slate-600 dark:text-slate-300">${profile.bio}</p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      ${profile.links.map(link => `
+        <a href="${link.href}" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+          <span class="iconify" data-icon="${link.icon}"></span>
+          <span class="text-sm">${link.label}</span>
+        </a>
+      `).join('')}
+    </div>
+    <div class="mt-5 flex flex-wrap gap-2">
+      ${profile.capabilities.map(cap => `
+        <span class=\"inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-200 border border-brand-100/70 dark:border-brand-800 text-xs\">
+          <span class=\"iconify\" data-icon=\"ph:check-circle-duotone\"></span>
+          ${cap}
+        </span>
+      `).join('')}
+    </div>
+  `;
+}
+```
+projectCard.js
+```
+export function createProjectCard(project) {
+  const statusChips = [
+    project.openSource ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200 border border-emerald-100/70 dark:border-emerald-800"><span class="iconify" data-icon="mdi:source-branch"></span>OS</span>' : '',
+    project.live ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-accent-50 text-accent-700 dark:bg-accent-900/30 dark:text-accent-200 border border-accent-100/70 dark:border-accent-800"><span class="iconify" data-icon="mdi:lightning-bolt"></span>Live</span>' : ''
+  ].filter(Boolean).join('');
+
+  const hasRepoUrl = typeof project.repoUrl === 'string' && project.repoUrl.trim().length > 0;
+  const hasLiveUrl = project.live === true && typeof project.liveUrl === 'string' && project.liveUrl.trim().length > 0;
+
+  const actions = (hasRepoUrl || hasLiveUrl) ? `
+    <div class="mt-3 flex items-center gap-2">
+      ${hasRepoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
+      ${hasLiveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
+    </div>
+  ` : '';
+
+  const tagChips = project.tags.map(t => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200/70 dark:border-slate-700">${t}</span>`).join('');
+
+  const clickable = Boolean(project.caseStudyPath);
+  const isPersonal = project.type === 'personal';
+  const cardPadding = isPersonal ? 'p-3' : 'p-4';
+  const titleClass = isPersonal ? 'text-sm font-semibold leading-snug' : 'font-semibold leading-tight';
+  const borderClass = isPersonal ? 'border-slate-200/60 dark:border-slate-800/80' : 'border-slate-200/70 dark:border-slate-800';
+  const bgClass = isPersonal ? 'bg-white/50 dark:bg-slate-900/50' : 'bg-white/60 dark:bg-slate-900/60';
+  const hoverClass = isPersonal ? 'hover:shadow-md' : 'hover:shadow-lg';
+  const transformHover = isPersonal ? '' : 'hover:-translate-y-0.5';
+  const imageAspect = isPersonal ? 'aspect-[4/3]' : 'aspect-[16/9]';
+
+  const imageBlock = project.cover
+    ? `<img src="${project.cover}" alt="${project.title} cover" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"/>`
+    : `<div class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center">
+         <span class="iconify text-slate-400" data-icon="ph:image-duotone" data-width="32" data-height="32"></span>
+       </div>`;
+
+  const personalActions = (isPersonal && (hasRepoUrl || hasLiveUrl)) ? `
+    <div class="mt-3 flex items-center gap-2">
+      ${hasLiveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-brand-600 text-white hover:bg-brand-700 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:external-link\"></span>Live</a>` : ''}
+      ${hasRepoUrl ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 text-xs transition-colors"><span class=\"iconify\" data-icon=\"mdi:github\"></span>Repo</a>` : ''}
+    </div>
+  ` : '';
+
+  const html = `
+    <article class="group overflow-hidden rounded-2xl border ${borderClass} ${bgClass} shadow-subtle ${hoverClass} transition-[box-shadow,transform] ${clickable ? `cursor-pointer ${transformHover}` : ''}">
+      <div class="${imageAspect} overflow-hidden">
+        ${imageBlock}
+      </div>
+      <div class="${cardPadding}">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="${titleClass}">${project.title}</h3>
+          <div class="flex items-center gap-1">${statusChips}</div>
+        </div>
+        <p class="mt-1 ${isPersonal ? 'text-xs' : 'text-sm'} text-slate-600 dark:text-slate-300">${project.description}</p>
+        <div class="mt-2 ${isPersonal ? 'gap-1.5' : 'gap-2'} flex flex-wrap">${tagChips}</div>
+        ${isPersonal ? personalActions : actions}
+      </div>
+    </article>
+  `;
+
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html.trim();
+  const card = wrapper.firstElementChild;
+
+  if (clickable) {
+    card.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.closest('a')) return; // allow inner links
+      const path = encodeURI(project.caseStudyPath);
+      window.location.assign(path);
+    });
+  }
+
+  return card;
+}
+```

@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Thomas Graphics',
   role: 'UI/UX Designer & Engineer',
-  tagline: 'From nothing → first frontend prototype',
+  tagline: 'Bridging the gap between human intent and functional code.',
   location: 'Remote / EU',
   bio: 'I help founders and teams go from zero to a polished, testable frontend prototype fast. My process blends product thinking, UX research, and systems-level front-end engineering.',
   avatar: '/assets/img/profilePic.png',
@@ -11,7 +11,14 @@ export const profile = {
     { label: 'Email', icon: 'mdi:email', href: 'tomce.graphics@gmail.com' }
   ],
   capabilities: [
-    'Product discovery', 'Rapid prototyping', 'Design systems', 'Frontend architecture', 'Accessibility', 'Figma → Code'
+    'Product discovery',
+    'HCI Research & Design',
+    'Functional MVP Prototyping',
+    'Rapid prototyping',
+    'Design systems',
+    'Frontend architecture',
+    'Accessibility',
+    'Figma → Code'
   ]
 };
 
@@ -78,7 +85,7 @@ export const personalProjects = [
     repo: "null",
     liveUrl: "null",
     caseStudyPath: "personal-projects/weather-station/index.html",
-    cover: "assets/covers/weather-thumbnail.png"
+    cover: "assets/covers/weather-app-cover.png"
   },
   {
     title: 'Workout App',
@@ -118,26 +125,26 @@ export const personalProjects = [
 export const services = [
   {
     icon: 'ph:lightning-duotone',
-    title: 'Rapid Prototyping',
-    description: 'Clickable, high-fidelity prototypes built in Figma or Code to validate product direction and secure stakeholder buy-in fast.'
+    title: 'MVP Prototyping',
+    description: 'I build clickable, high-fidelity prototypes in Figma or React to help founders validate ideas, pitch to investors, and reduce development waste.'
   },
   {
     icon: 'ph:stack-duotone',
-    title: 'Design Systems',
-    description: 'Scalable, token-driven Figma systems that bridge the gap to Tailwind CSS, ensuring 1:1 consistency between design and production.'
+    title: 'Design-to-Code Systems',
+    description: 'Creating scalable, token-driven systems that bridge the gap between design and production, ensuring 1:1 consistency with Tailwind CSS or CSS-in-JS.'
   },
   {
-    icon: 'ph:wheelchair-motion-duotone',
-    title: 'Accessible Frontends',
-    description: 'Full-stack frontend implementation with a focus on accessibility (A11y), performance, and clean, modular ES6+ architecture.'
+    icon: 'ph:code-duotone', // Swapped icon for engineering focus
+    title: 'UX Engineering',
+    description: 'Full-stack frontend development with a focus on performance, semantic HTML, and building components that are as accessible as they are beautiful.'
   }
 ];
 
 export const processSteps = [
-  { step: 1, title: 'Discover', description: 'Goals, constraints, and user needs.' },
-  { step: 2, title: 'Design', description: 'Architecting flows and building scalable Figma design systems.' },
-  { step: 3, title: 'Prototype', description: 'Interactive UI with realistic data.' },
-  { step: 4, title: 'Validate', description: 'User testing and iteration.' }
+  { step: 1, title: 'Synthesize', description: 'Deep-diving into user psychology and product requirements.' },
+  { step: 2, title: 'Interaction', description: 'Architecting flows and interaction models that solve for cognitive load.' },
+  { step: 3, title: 'Prototype', description: 'Building the functional "proof of concept" using the most efficient tech stack.' },
+  { step: 4, title: 'Validate', description: 'Iterating based on real-world interaction and data before production handoff.' }
 ];
 
 export const testimonials = [

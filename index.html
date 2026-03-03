@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio — UI/UX Designer & Engineer</title>
-  <meta name="description" content="UI/UX designer and engineer focusing on going from nothing to first frontend prototype.">
+  <title>Thomas Graphics — HCI Designer & Design Technologist</title>
+  <meta name="description"
+    content="HCI Designer & UI/UX Engineer focusing on going from nothing to a testable, scalable frontend prototype.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
 
   <!-- Tailwind CSS via CDN with custom theme config -->
   <script>
@@ -22,37 +26,30 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji']
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
           },
           colors: {
             brand: {
-              50: '#fffce7',
-              100: '#fff8c1',
-              200: '#ffed86',
-              300: '#ffda41',
-              400: '#ffc40e',
-              500: '#f2ab01',
-              600: '#d08100',
-              700: '#a65b02',
-              800: '#89460a',
-              900: '#743a0f',
-              950: '#441d04',
-            },
-            accent: {
-              50: '#fff7ed',
-              100: '#ffedd5',
-              200: '#fed7aa',
-              300: '#fdba74',
-              400: '#fb923c',
-              500: '#f97316',
-              600: '#ea580c',
-              700: '#c2410c',
-              800: '#9a3412',
-              900: '#7c2d12'
+              50: '#fffce7', 100: '#fff8c1', 200: '#ffed86', 300: '#ffda41',
+              400: '#ffc40e', 500: '#f2ab01', 600: '#d08100', 700: '#a65b02',
+              800: '#89460a', 900: '#743a0f', 950: '#441d04',
             }
           },
           boxShadow: {
-            subtle: '0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08)'
+            'glass': '0 4px 30px rgba(0, 0, 0, 0.05)',
+            'glass-hover': '0 10px 40px rgba(0, 0, 0, 0.08)',
+            'glass-dark': '0 4px 30px rgba(0, 0, 0, 0.3)',
+            'glass-dark-hover': '0 10px 40px rgba(0, 0, 0, 0.5)'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
           }
         }
       }
@@ -61,189 +58,307 @@
 
   <!-- Iconify -->
   <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
-  
-  <!-- Custom Scrollbar Styles -->
+
+  <!-- Custom Scrollbar & Utility Styles -->
   <style>
-    /* For WebKit browsers (Chrome, Safari, newer Edge) */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
-    
+
     ::-webkit-scrollbar-track {
       background: transparent;
     }
-    
+
     ::-webkit-scrollbar-thumb {
-      background: rgba(242, 171, 1, 0.3); /* Brand-500 with opacity */
-      border-radius: 3px;
-      transition: background 0.2s ease;
+      background: rgba(242, 171, 1, 0.4);
+      border-radius: 4px;
+      transition: background 0.2s;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(242, 171, 1, 0.5); /* Slightly more visible on hover */
+      background: rgba(242, 171, 1, 0.8);
     }
-    
-    /* Remove scrollbar buttons/arrows */
-    ::-webkit-scrollbar-button {
-      display: none;
-    }
-    
-    /* Dark mode support */
+
     @media (prefers-color-scheme: dark) {
       ::-webkit-scrollbar-thumb {
-        background: rgba(255, 196, 14, 0.3); /* Brand-400 with opacity */
+        background: rgba(255, 196, 14, 0.4);
       }
-      
+
       ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 196, 14, 0.5);
+        background: rgba(255, 196, 14, 0.8);
       }
     }
-    
-    /* For Firefox */
+
     * {
       scrollbar-width: thin;
-      scrollbar-color: rgba(242, 171, 1, 0.3) transparent; /* Brand-500 with opacity */
+      scrollbar-color: rgba(242, 171, 1, 0.4) transparent;
     }
-    
-    /* For dark mode in Firefox */
-    @media (prefers-color-scheme: dark) {
-      * {
-        scrollbar-color: rgba(255, 196, 14, 0.3) transparent; /* Brand-400 with opacity */
-      }
+
+    /* Background Grid for Technologist feel */
+    .bg-grid-pattern {
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Spotlight Effect Utility */
+    .group,
+    #profileCard,
+    blockquote,
+    article {
+      position: relative;
+      overflow: hidden;
+      /* Ensures glow doesn't spill out */
+    }
+
+    /* The Glow Overlay */
+    .group::before,
+    #profileCard::before,
+    blockquote::before,
+    article::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      /* Matches card radius */
+      background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+          rgba(242, 171, 1, 0.06),
+          /* Brand Color subtle glow */
+          transparent 40%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      /* Let clicks pass through */
+      z-index: 2;
+    }
+
+    /* Show glow on hover */
+    .group:hover::before,
+    #profileCard:hover::before,
+    blockquote:hover::before,
+    article:hover::before {
+      opacity: 1;
     }
   </style>
 </head>
-<body class="bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-brand-200 selection:text-brand-900">
-  <a href="#content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-brand-600 focus:text-white focus:px-3 focus:py-2 focus:rounded-md">Skip to content</a>
 
-  <!-- Page Shell -->
-  <div class="min-h-dvh">
+<body
+  class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 font-sans selection:bg-brand-500/30 selection:text-brand-900 dark:selection:text-brand-100 antialiased relative">
+
+  <!-- Engineering Grid Background -->
+  <div class="fixed inset-0 -z-10 h-full w-full bg-grid-pattern pointer-events-none"></div>
+  <!-- Subtle Gradient Orbs -->
+  <div
+    class="fixed top-[-10%] left-[-10%] -z-10 h-[40rem] w-[40rem] rounded-full bg-brand-400/10 blur-[100px] pointer-events-none">
+  </div>
+  <div
+    class="fixed bottom-[-10%] right-[-10%] -z-10 h-[40rem] w-[40rem] rounded-full bg-brand-600/10 blur-[100px] pointer-events-none">
+  </div>
+
+  <a href="#content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-brand-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:z-50">Skip
+    to content</a>
+
+  <div class="min-h-dvh flex flex-col">
     <!-- Header will be injected here by navbar.js -->
 
     <!-- Hero -->
-    <section id="hero" class="relative overflow-hidden border-b border-slate-200/70 dark:border-slate-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          <div class="lg:col-span-2">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-              Hi, I'm <span class="text-brand-600">Thomas</span> <span class="text-brand-600">Graphics</span> a UI/UX Engineer.
+    <section id="hero" class="relative overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 xl:col-span-8 animate-fade-in">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-300 text-xs font-mono mb-6">
+              <span class="relative flex h-2 w-2 ">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              Available for new opportunities
+            </div>
+            <h1
+              class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-slate-900 dark:text-white">
+              Bridging <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-brand-700">Human
+                Intent</span><br />
+              with Functional Code.
             </h1>
-            <p class="mt-4 text-slate-600 dark:text-slate-300 max-w-2xl text-base sm:text-lg">
-              I help founders go from idea to a polished, testable frontend prototype with strong UX, scalable design systems, and accessible code.
+            <p class="mt-6 text-slate-600 dark:text-slate-400 max-w-2xl text-lg sm:text-xl leading-relaxed">
+              I'm <strong class="text-slate-900 dark:text-slate-200 font-semibold">Thomas Graphics</strong>, an HCI
+              Designer & Design Technologist. I help product teams go from zero to a polished, testable frontend
+              prototype with rigorous UX research and scalable architecture.
             </p>
-            <div class="mt-6 flex flex-wrap gap-3">
-              <a href="#work" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm sm:text-base rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors">
-                <span class="iconify" data-icon="ph:briefcase-duotone"></span>
+            <div class="mt-10 flex flex-wrap gap-4">
+              <a href="#work"
+                class="group inline-flex items-center gap-2 px-6 py-3 text-sm sm:text-base font-medium rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-brand-600 dark:hover:bg-brand-500 hover:text-white transition-all shadow-lg hover:shadow-brand-500/25">
                 View Work
+                <span class="iconify transition-transform group-hover:translate-x-1"
+                  data-icon="ph:arrow-right-bold"></span>
               </a>
-              <a href="#services" class="inline-flex items-center gap-2 px-4 py-2.5 text-sm sm:text-base rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
-                <span class="iconify" data-icon="ph:gear-six-duotone"></span>
-                Services
+              <a href="#services"
+                class="inline-flex items-center gap-2 px-6 py-3 text-sm sm:text-base font-medium rounded-xl border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800 transition-all">
+                <span class="iconify text-slate-400" data-icon="ph:terminal-window-duotone"></span>
+                My Capabilities
               </a>
             </div>
           </div>
-          <div class="lg:col-span-1 mt-8 lg:mt-0">
-            <section id="profileCard" class="rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-6 shadow-subtle"></section>
+
+          <!-- Dynamic Profile Card Area -->
+          <div class="lg:col-span-5 xl:col-span-4 mt-8 lg:mt-0 relative group rounded-[2rem]">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-brand-500 to-amber-300 rounded-[2rem] blur opacity-100 group-hover:opacity-40 transition duration-1000 group-hover:duration-200">
+            </div>
+            <section id="profileCard"
+              class="relative rounded-[2rem] border border-white/40 dark:border-slate-700/50 bg-white dark:bg-slate-900 backdrop-blur-xl p-8 shadow-glass dark:shadow-glass-dark transition-all">
+            </section>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Main Sections -->
-    <main id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16">
-      <!-- Work -->
-      <section id="work" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-          <div class="mb-2 sm:mb-0">
-            <h2 class="text-xl sm:text-2xl font-semibold">Client Projects</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400">High-impact projects delivered for clients.</p>
+    <main id="content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24 flex-grow">
+
+      <!-- Client Projects -->
+      <section id="work" class="scroll-mt-32">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Client Engineering
+            </h2>
+            <p class="mt-2 text-base text-slate-500 dark:text-slate-400 font-mono text-sm">High-impact production
+              systems & MVPs.</p>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button data-filter="all" class="filter-btn active inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
-            <button data-filter="live" class="filter-btn inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
-            <button data-filter="opensource" class="filter-btn inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
+
+          <!-- Segmented Control Style Filters -->
+          <div
+            class="inline-flex p-1 bg-slate-200/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-300/50 dark:border-slate-700/50">
+            <button data-filter="all"
+              class="filter-btn active relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-900 dark:text-white bg-white dark:bg-slate-700 shadow-sm">All</button>
+            <button data-filter="live"
+              class="filter-btn relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Live</button>
+            <button data-filter="opensource"
+              class="filter-btn relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Open
+              Source</button>
           </div>
         </div>
-        <div id="clientProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6"></div>
+        <div id="clientProjects" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
       </section>
 
-      <section class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-          <div class="mb-2 sm:mb-0">
-            <h2 class="text-xl sm:text-2xl font-semibold">Personal Projects</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400">Smaller experiments and tools.</p>
+      <!-- Personal Projects -->
+      <section class="scroll-mt-32">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">R&D / Experiments
+            </h2>
+            <p class="mt-2 text-base text-slate-500 dark:text-slate-400 font-mono text-sm">Exploring interactions, AI,
+              and tooling.</p>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button data-filter="all-personal" class="filter-btn-personal active inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">All</button>
-            <button data-filter="live-personal" class="filter-btn-personal inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Live</button>
-            <button data-filter="opensource-personal" class="filter-btn-personal inline-flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded-md border border-slate-300/70 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-900">Open Source</button>
+
+          <div
+            class="inline-flex p-1 bg-slate-200/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-300/50 dark:border-slate-700/50">
+            <button data-filter="all-personal"
+              class="filter-btn-personal active relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-900 dark:text-white bg-white dark:bg-slate-700 shadow-sm">All</button>
+            <button data-filter="live-personal"
+              class="filter-btn-personal relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Live</button>
+            <button data-filter="opensource-personal"
+              class="filter-btn-personal relative px-4 py-2 text-sm font-medium rounded-lg transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Open
+              Source</button>
           </div>
         </div>
-        <div id="personalProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        <div id="personalProjects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       </section>
 
       <!-- Services -->
-      <section id="services" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-semibold">Services</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">
-            Engagements tailored to move from zero to prototype.
-          </p>
+      <section id="services" class="scroll-mt-32">
+        <div class="mb-10 max-w-2xl">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Technical
+            Capabilities</h2>
+          <p class="mt-2 text-base text-slate-500 dark:text-slate-400">Bridging the gap between conceptual design and
+            production-ready code.</p>
         </div>
-        <div id="servicesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
-        <!-- Philosophy Statement -->
-        <div class="mt-8 p-4 sm:p-6 rounded-2xl border border-slate-200/70 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-5 shadow-subtle">
-          <h3 class="text-lg font-semibold mb-2">My Approach</h3>
-          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
-            I build with <span class="font-semibold">vanilla JavaScript, Tailwind CSS, and modular ES6+</span>.
-            Not every project needs a heavy framework — and I've found that keeping things lightweight
-            makes prototypes faster to build, easier to maintain, and ready to connect to any backend.
-            This approach ensures you get <span class="font-semibold">real, working MVPs</span> quickly,
-            without unnecessary complexity.
-          </p>
+        <div id="servicesList" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+
+        <!-- Philosophy Statement (Terminal Style) -->
+        <div
+          class="mt-10 overflow-hidden rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-900 shadow-xl">
+          <div class="flex items-center gap-2 border-b border-slate-700 bg-slate-800/50 px-4 py-3">
+            <div class="h-3 w-3 rounded-full bg-red-500"></div>
+            <div class="h-3 w-3 rounded-full bg-yellow-500"></div>
+            <div class="h-3 w-3 rounded-full bg-green-500"></div>
+            <span class="ml-2 font-mono text-xs text-slate-400">approach.md</span>
+          </div>
+          <div class="p-6 sm:p-8 text-slate-300 text-sm sm:text-base leading-relaxed font-mono">
+            <span class="text-brand-400">></span> I build with <span class="text-white font-semibold">vanilla
+              JavaScript, Tailwind CSS, and modular ES6+</span>.<br /><br />
+            <span class="text-brand-400">></span> Not every project needs a heavy framework. Keeping the architecture
+            lightweight accelerates the transition from prototype to working MVP.<br /><br />
+            <span class="text-brand-400">></span> The result? Real, testable software that strictly adheres to HCI
+            principles and scales directly into production environments.
+          </div>
         </div>
       </section>
 
       <!-- Process -->
-      <section id="process" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-semibold">Process</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">A clear path from idea to interactive prototype.</p>
+      <section id="process" class="scroll-mt-32">
+        <div class="mb-12">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Engineering Process
+          </h2>
+          <p class="mt-2 text-base text-slate-500 dark:text-slate-400 font-mono text-sm">Systematic progression from
+            ambiguity to clarity.</p>
         </div>
-        <ol id="processSteps" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></ol>
+        <ol id="processSteps" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 relative"></ol>
       </section>
 
       <!-- Testimonials -->
-      <section id="testimonials" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-semibold">Testimonials</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">What partners say after shipping.</p>
+      <section id="testimonials" class="scroll-mt-32">
+        <div class="mb-10">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Partner Feedback</h2>
+          <p class="mt-2 text-base text-slate-500 dark:text-slate-400">Perspectives from founders and product leads.</p>
         </div>
-        <div id="testimonialsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </section>  
+        <div id="testimonialsList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </section>
 
       <!-- Articles -->
-      <section id="articles" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-semibold">Latest Articles</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400">Thoughts on design, development, and process.</p>
+      <section id="articles" class="scroll-mt-32">
+        <div class="mb-10">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Writing &
+            Publications</h2>
+          <p class="mt-2 text-base text-slate-500 dark:text-slate-400 font-mono text-sm">Thoughts on design systems,
+            human factors, and code.</p>
         </div>
-        <div id="articlesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="articlesList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </section>
 
       <!-- Contact -->
-      <section id="contact" class="scroll-mt-20 sm:scroll-mt-24">
-        <div class="bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/30 dark:to-brand-900/10 rounded-2xl p-6 sm:p-8 md:p-12">
-          <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-2xl sm:text-3xl font-bold mb-4">Ready to build something great?</h2>
-            <p class="text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-              Have a project in mind or want to discuss how I can help bring your ideas to life? Let's talk!
+      <section id="contact" class="scroll-mt-32">
+        <div
+          class="relative overflow-hidden rounded-[2.5rem] bg-slate-900 text-center p-10 sm:p-16 border border-slate-800 shadow-2xl">
+          <!-- Decorative Background for Contact -->
+          <div
+            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+')] opacity-20">
+          </div>
+          <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-full bg-gradient-to-b from-brand-500/20 to-transparent blur-3xl rounded-full">
+          </div>
+
+          <div class="relative z-10 max-w-2xl mx-auto">
+            <span
+              class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-white/10 text-brand-400 backdrop-blur-md border border-white/10 mb-6">
+              <span class="iconify" data-icon="ph:paper-plane-tilt-duotone" data-width="32"></span>
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-6">Ready to architect your next MVP?</h2>
+            <p class="text-slate-400 mb-10 text-lg">
+              Whether you need rapid validation or a robust design system to hand off to engineering, let's architect
+              the right solution.
             </p>
-            <a href="mailto:tomce.graphics@gmail.com" class="inline-flex items-center gap-2 px-6 py-3 rounded-md bg-brand-600 text-white hover:bg-brand-700 transition-colors text-base font-medium">
-              <span class="iconify" data-icon="ph:envelope-simple-duotone"></span>
-              Get in Touch
+            <a href="mailto:tomce.graphics@gmail.com"
+              class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-brand-500 text-slate-900 font-bold text-lg hover:bg-brand-400 hover:scale-105 transition-all shadow-[0_0_40px_rgba(242,171,1,0.3)]">
+              Initialize Project
+              <span class="iconify" data-icon="ph:arrow-right-bold"></span>
             </a>
           </div>
         </div>
@@ -251,19 +366,28 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-slate-200/70 dark:border-slate-800 mt-16">
+    <footer
+      class="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 backdrop-blur-md mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div class="flex items-center gap-2">
-            <span class="iconify text-brand-600" data-icon="ph:sparkle-duotone" data-width="20" data-height="20"></span>
-            <span class="font-medium">Thomas Graphics</span>
+          <div class="flex items-center gap-3">
+            <div
+              class="h-8 w-8 rounded-lg bg-slate-900 dark:bg-white flex items-center justify-center text-white dark:text-slate-900">
+              <span class="iconify" data-icon="ph:code-duotone" data-width="18"></span>
+            </div>
+            <span class="font-bold text-slate-900 dark:text-white tracking-tight">Thomas Graphics</span>
           </div>
-          <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-            <span> 2023 All rights reserved</span>
-            <span class="hidden md:inline">•</span>
-            <a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Privacy</a>
-            <span>•</span>
-            <a href="#" class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Terms</a>
+          <div class="flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400 font-mono">
+            <span>&copy; 2026 Sys.All_Rights_Reserved</span>
+            <div class="hidden md:block w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+            <a href="https://github.com/TomceGraphics" target="_blank"
+              class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-1">
+              <span class="iconify" data-icon="mdi:github"></span> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/tomcegraphics/" target="_blank"
+              class="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-1">
+              <span class="iconify" data-icon="mdi:linkedin"></span> LinkedIn
+            </a>
           </div>
         </div>
       </div>
@@ -273,4 +397,5 @@
   <!-- App Scripts (ES Modules) -->
   <script type="module" src="/src/js/main.js"></script>
 </body>
+
 </html>
