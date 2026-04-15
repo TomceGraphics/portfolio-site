@@ -20,7 +20,7 @@ export function createProjectCard(project) {
       >
       <!-- Type Badge -->
       <div class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 text-xs font-mono font-medium uppercase tracking-wider text-slate-600 dark:text-slate-300 shadow-sm">
-        ${project.type === 'client' ? 'Featured Project' : 'R&D / Personal'}
+        ${project.type === 'client' ? 'Featured Project' : 'Side Project'}
       </div>
       
       <!-- Quick Actions Overlay (decorative labels only) -->
