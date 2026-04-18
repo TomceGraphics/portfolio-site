@@ -50,7 +50,7 @@ export function renderNavbar() {
 
       <!-- Hire Me (text only, always) -->
       <a href="#contact"
-         class="flex items-center justify-center h-9 px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold uppercase tracking-wide whitespace-nowrap hover:scale-105 transition-transform">
+         class="flex items-center justify-center h-9 px-4 rounded-xl bg-slate-900 dark:bg-white text-slate-50 dark:text-slate-900 text-xs font-bold uppercase tracking-wide whitespace-nowrap hover:scale-105 transition-transform">
         Hire Me
       </a>
 

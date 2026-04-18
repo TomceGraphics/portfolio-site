@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labs — Thomas Graphics</title>
+  <meta name="description" content="Experiments, native apps, and projects that don't fit the typical narrative.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script>
+    window.tailwind = { config: { darkMode: 'class' } };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          },
+          colors: {
+            brand: {
+              50: '#fffce7', 100: '#fff8c1', 200: '#ffed86', 300: '#ffda41',
+              400: '#ffc40e', 500: '#f2ab01', 600: '#d08100', 700: '#a65b02',
+              800: '#89460a', 900: '#743a0f', 950: '#441d04',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Iconify -->
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+
+</head>
+
+<body
+  class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-200 font-sans antialiased min-h-dvh flex flex-col">
+
+  <!-- Header Placeholder (injected by JS or we can add manual back button here) -->
+  <nav class="p-6">
+    <a href="/"
+      class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+      <span class="iconify" data-icon="ph:arrow-left-bold"></span>
+      Back Home
+    </a>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow w-full">
+    <div class="mb-12 border-b border-slate-200 dark:border-slate-800 pb-8">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        Labs Area
+      </h1>
+      <p class="mt-4 text-slate-600 dark:text-slate-400 text-lg max-w-2xl">
+        A collection of experiments and side projects that don't quite fit the primary narrative of the portfolio. Think
+        native windows apps, micro-tools, and other R&D.
+      </p>
+    </div>
+
+    <!-- Future Labs Projects inject here -->
+    <div id="labsProjects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Example Static Card -->
+      <article
+        class="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl p-6 sm:p-8">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Python Music Downloader</h3>
+        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">A native Windows application to handle downloading
+          music efficiently.</p>
+        <span
+          class="mt-auto px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-xs font-mono text-slate-600 dark:text-slate-300 w-fit">Native
+          App</span>
+      </article>
+    </div>
+  </main>
+
+  <!-- App Scripts (ES Modules) -->
+  <script type="module">
+    import { labsProjects } from '../src/js/data.js';
+    import { createProjectCard } from '../src/components/projectCard.js';
+
+    const labsContainer = document.getElementById('labsProjects');
+
+    // Clear the placeholder
+    labsContainer.innerHTML = '';
+
+    // Render the labs projects
+    labsProjects.forEach(project => {
+      const card = createProjectCard(project);
+      labsContainer.appendChild(card);
+    });
+
+    // Simple Theme Toggle Sync
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</body>
+
+</html>

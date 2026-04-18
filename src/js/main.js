@@ -4,8 +4,8 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 // Data Imports
 import {
   profile,
-  clientProjects,
-  personalProjects,
+  selectedProjects,
+  otherProjects,
   services,
   processSteps,
   testimonials,
@@ -50,15 +50,16 @@ function initNavigation() {
 
     // Update the HUD links
     // Note: We target links by their href attribute since the nav is injected dynamically
-    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+    // EXCLUDE the Hire Me button (#contact) from the spy logic so it doesn't lose its unique branding
+    const navLinks = document.querySelectorAll('nav a[href^="#"]:not([href="#contact"])');
 
     navLinks.forEach(link => {
-      // Remove active styles (text-slate-900 / white)
+      // Remove active styles (text-slate-900 / white / active backgrounds)
       link.classList.remove('text-slate-900', 'dark:text-white', 'bg-slate-100', 'dark:bg-slate-800');
-      link.classList.add('text-slate-600', 'dark:text-slate-300'); // Reset to inactive
+      link.classList.add('text-slate-600', 'dark:text-slate-300'); // Reset to inactive state
 
       if (link.getAttribute('href') === `#${currentSectionId}`) {
-        // Add active styles
+        // Add active styles for currently scrolled section
         link.classList.remove('text-slate-600', 'dark:text-slate-300');
         link.classList.add('text-slate-900', 'dark:text-white', 'bg-slate-100', 'dark:bg-slate-800');
       }
@@ -84,19 +85,19 @@ function initProfile() {
  * Initialize Projects & Filters
  */
 function initProjects() {
-  const clientProjectsEl = document.getElementById('clientProjects');
-  const personalProjectsEl = document.getElementById('personalProjects');
+  const selectedProjectsEl = document.getElementById('selectedProjects');
+  const otherProjectsEl = document.getElementById('otherProjects');
 
   // Client Work
-  if (clientProjectsEl) {
-    renderProjects(clientProjectsEl, clientProjects);
-    attachFilterControls('.filter-btn', clientProjectsEl, clientProjects);
+  if (selectedProjectsEl) {
+    renderProjects(selectedProjectsEl, selectedProjects);
+    attachFilterControls('.filter-btn', selectedProjectsEl, selectedProjects);
   }
 
   // Personal / R&D
-  if (personalProjectsEl) {
-    renderProjects(personalProjectsEl, personalProjects);
-    attachFilterControls('.filter-btn-personal', personalProjectsEl, personalProjects);
+  if (otherProjectsEl) {
+    renderProjects(otherProjectsEl, otherProjects);
+    attachFilterControls('.filter-btn-personal', otherProjectsEl, otherProjects);
   }
 }
 

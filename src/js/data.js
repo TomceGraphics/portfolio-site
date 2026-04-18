@@ -22,76 +22,64 @@ export const profile = {
   ]
 };
 
-export const clientProjects = [
+export const selectedProjects = [
   {
     title: 'Digital Parking Solution for Ohrid',
     description: 'A digital parking solution to improve user experience and increase city revenue',
     tags: ['Design System', 'Frontend Development', 'UI/UX Design', 'Product Management'],
-    type: 'client',
+    type: 'featured',
     openSource: false,
     live: false,
-    caseStudyPath: 'client-projects/parking-app/',
+    caseStudyPath: 'work/parking-app/',
     repoUrl: null,
     liveUrl: null,
-    cover: 'client-projects/parking-app/images/3-screens/showcase-3-screens.png'
+    cover: 'work/parking-app/images/3-screens/showcase-3-screens.png'
   },
+  {
+    title: "DocMatch: AI Triage Engine",
+    description: "An AI-driven healthcare platform that translates natural language symptoms into precise medical routing, eliminating the cognitive burden of self-diagnosis.",
+    tags: ["UX Engineering", "Frontend Development", "HCI Design", "UI/UX Design", "AI / LLM Integration"],
+    type: 'featured',
+    openSource: false,
+    live: false,
+    caseStudyPath: 'work/docMatch/',
+    repoUrl: null,
+    liveUrl: null,
+    cover: 'assets/covers/docmatch-cover.png'
+  }
+];
+
+export const otherProjects = [
   {
     id: "qr-restaurant",
     title: "QR-Based Ordering Ecosystem",
     description: "Designed a sales-ready MVP for restaurant automation. Focused on service design architecture to enable pre-order validation and rapid sales cycles.",
     tags: ["Service Design", "Architecture", "Figma Systems", "Sales-Ready MVP"],
-    type: 'client',
+    type: 'other',
     live: false,
     openSource: false,
     repoUrl: null,
     liveUrl: null,
-    caseStudyPath: "/client-projects/qr-restaurant/",
+    caseStudyPath: "/work/qr-restaurant/",
     cover: "assets/covers/qr-cover.png"
-  },
-  {
-    title: 'K&I',
-    description: 'full branding for a fashion brand',
-    tags: ['Branding', 'Design', 'logo design'],
-    type: 'client',
-    openSource: false,
-    live: false,
-    caseStudyPath: 'client-projects/K&I/CaseStudy.pdf',
-    repoUrl: null,
-    liveUrl: null,
-    cover: 'client-projects/K&I/k&i-cover.webp'
-  }
-];
-
-export const personalProjects = [
-  {
-    title: "DocMatch: AI Triage Engine",
-    description: "An AI-driven healthcare platform that translates natural language symptoms into precise medical routing, eliminating the cognitive burden of self-diagnosis.",
-    tags: ["UX Engineering", "Frontend Development", "HCI Design", "UI/UX Design", "AI / LLM Integration"],
-    type: 'personal',
-    openSource: false,
-    live: false,
-    caseStudyPath: 'personal-projects/docMatch/index.html',
-    repoUrl: null,
-    liveUrl: null,
-    cover: 'assets/covers/docmatch-cover.png'
   },
   {
     title: "Reliability-First Weather IoT",
     description: "Engineered a custom hardware weather station and React dashboard to solve local data inaccuracy, ensuring 100% reliable UX for weather-sensitive activities.",
     tags: ["Full-Stack", "IoT", "Data Engineering", "UX Research"],
-    type: 'personal',
+    type: 'other',
     live: false,
     openSource: true,
     repo: "null",
     liveUrl: "null",
-    caseStudyPath: "personal-projects/weather-station/index.html",
+    caseStudyPath: "work/weather-station/index.html",
     cover: "assets/covers/weather-app-cover.png"
   },
   {
     title: 'Workout App',
     description: 'a workout app for tracking your workouts and progress',
     tags: ['Open Source', 'Design Tokens', 'Tailwind'],
-    type: 'personal',
+    type: 'other',
     openSource: false,
     live: true,
     repoUrl: '#',
@@ -102,7 +90,7 @@ export const personalProjects = [
     title: 'Prompt Library',
     description: 'a prompt library for ai',
     tags: ['Open Source', 'tailwind', 'figma', 'ai', 'ui/ux design'],
-    type: 'personal',
+    type: 'other',
     openSource: true,
     live: true,
     repoUrl: 'https://github.com/TomceGraphics/Prompt-Library',
@@ -113,12 +101,27 @@ export const personalProjects = [
     title: 'Graph Visualizer',
     description: 'A lightweight, browser-based graph visualizer designed to help students and developers visualize graphs and practice graph algorithms.',
     tags: ['Open Source', 'tailwind', 'figma', 'ui/ux design', 'graph visualization'],
-    type: 'personal',
+    type: 'other',
     openSource: true,
     live: false,
     repoUrl: 'https://github.com/TomceGraphics/graph-visualizer',
     liveUrl: 'null',
     cover: 'assets/covers/graph-visualizer-cover.webp'
+  }
+];
+
+export const labsProjects = [
+  {
+    title: 'K&I',
+    description: 'full branding for a fashion brand',
+    tags: ['Branding', 'Design', 'logo design'],
+    type: 'other',
+    openSource: false,
+    live: false,
+    caseStudyPath: 'work/K&I/CaseStudy.pdf',
+    repoUrl: null,
+    liveUrl: null,
+    cover: 'work/K&I/k&i-cover.webp'
   }
 ];
 
