@@ -18,7 +18,7 @@
   <script>
     window.tailwind = { config: { darkMode: 'class' } };
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -69,33 +69,94 @@
     </div>
 
     <!-- Future Labs Projects inject here -->
-    <div id="labsProjects" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Example Static Card -->
-      <article
-        class="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl p-6 sm:p-8">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Python Music Downloader</h3>
-        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4">A native Windows application to handle downloading
-          music efficiently.</p>
-        <span
-          class="mt-auto px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-md text-xs font-mono text-slate-600 dark:text-slate-300 w-fit">Native
-          App</span>
-      </article>
+    <div id="labsProjects" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Injected via JS -->
     </div>
   </main>
+
+  <!-- Marked.js to render Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Mermaid.js to render Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    const isDark = document.documentElement.classList.contains('dark') || window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    mermaid.initialize({ 
+      startOnLoad: false, 
+      theme: 'base',
+      themeVariables: {
+        fontFamily: 'JetBrains Mono, monospace',
+        background: 'transparent',
+        primaryColor: isDark ? '#0f172a' : '#f8fafc', // slate-900 / slate-50
+        primaryTextColor: isDark ? '#f1f5f9' : '#0f172a', // slate-100 / slate-900
+        primaryBorderColor: isDark ? '#334155' : '#e2e8f0', // slate-700 / slate-200
+        lineColor: isDark ? '#475569' : '#94a3b8', // slate-600 / slate-400
+        secondaryColor: isDark ? '#f2ab01' : '#f2ab01', // brand-500
+        secondaryTextColor: isDark ? '#ffffff' : '#000000',
+        secondaryBorderColor: isDark ? '#a65b02' : '#f2ab01', // brand-700 / brand-500
+        tertiaryColor: isDark ? '#020617' : '#ffffff', // slate-950 / white
+        clusterBkg: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(241, 245, 249, 0.4)', // transparent slate
+        clusterBorder: isDark ? '#1e293b' : '#e2e8f0', // slate-800 / slate-200
+        nodeBorder: isDark ? '#334155' : '#cbd5e1', // slate-700 / slate-300
+        mainBkg: isDark ? '#0f172a' : '#f8fafc', 
+        textColor: isDark ? '#f1f5f9' : '#0f172a',
+        edgeLabelBackground: isDark ? '#020617' : '#ffffff',
+      }
+    });
+  </script>
 
   <!-- App Scripts (ES Modules) -->
   <script type="module">
     import { labsProjects } from '../src/js/data.js';
-    import { createProjectCard } from '../src/components/projectCard.js';
+    import { initProjectModal, openProjectModal } from '../src/components/projectModal.js';
+
+    // Initialize the Modal DOM component
+    initProjectModal();
 
     const labsContainer = document.getElementById('labsProjects');
 
-    // Clear the placeholder
-    labsContainer.innerHTML = '';
-
-    // Render the labs projects
+    // Render the labs projects with custom layout
     labsProjects.forEach(project => {
-      const card = createProjectCard(project);
+      const card = document.createElement('article');
+      card.className = "group cursor-pointer flex flex-col p-6 sm:p-8 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 hover:border-brand-500/50 dark:hover:border-brand-500/50 rounded-2xl transition-all shadow-sm hover:shadow-xl";
+
+      const primaryTag = project.tags && project.tags.length > 0 ? project.tags[0] : 'PROJECT';
+      const version = project.version || 'v1.0.0';
+      const date = project.date || 'Unknown Date';
+      const status = project.status || 'Active';
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between mb-8">
+          <span class="px-3 py-1 border border-brand-500/30 bg-brand-50/50 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 text-xs font-mono uppercase tracking-widest font-semibold rounded-md">
+            ${primaryTag}
+          </span>
+          <span class="font-mono text-xs text-slate-500 dark:text-slate-400">
+            ${version}
+          </span>
+        </div>
+        
+        <h3 class="text-2xl font-black uppercase text-slate-900 dark:text-white mb-4 tracking-tight group-hover:text-brand-500 transition-colors">
+          ${project.title}
+        </h3>
+        
+        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-10 flex-grow">
+          ${project.description}
+        </p>
+        
+        <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/50 pt-6 font-mono text-xs text-slate-500">
+          <div class="flex items-center gap-2">
+            <span class="iconify" data-icon="ph:clock" data-width="14"></span>
+            ${date}
+          </div>
+          <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span class="iconify" data-icon="ph:activity" data-width="14"></span>
+            ${status}
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => openProjectModal(project));
       labsContainer.appendChild(card);
     });
 
