@@ -36,6 +36,18 @@ export const selectedProjects = [
     cover: 'work/parking-app/images/3-screens/showcase-3-screens.png'
   },
   {
+    title: 'BlockSync: Polyglot Collaborative Engine',
+    description: 'A real-time, hybrid Polyglot Persistence engine mapping Notion-style nested blocks and bidirectional wiki-links for collaborative writing.',
+    tags: ['UX Engineering', 'Polyglot Persistence', 'Real-Time Sync', 'Graph Database'],
+    type: 'featured',
+    openSource: true,
+    live: false,
+    caseStudyPath: 'work/blockSync/index.html',
+    repoUrl: null,
+    liveUrl: null,
+    cover: 'work/blockSync/assets/blocksync-cover.png'
+  },
+  {
     title: "DocMatch: AI Triage Engine",
     description: "An AI-driven healthcare platform that translates natural language symptoms into precise medical routing, eliminating the cognitive burden of self-diagnosis.",
     tags: ["UX Engineering", "Frontend Development", "HCI Design", "UI/UX Design", "AI / LLM Integration"],

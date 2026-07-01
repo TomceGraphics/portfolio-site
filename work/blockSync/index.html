@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlockSync | Polyglot Persistence & Real-Time Sync Case Study</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Iconify for premium modern icons -->
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+
+  <!-- D3.js for force-directed graph -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Google Fonts: Space Grotesk (Display) & Inter (Sans) & JetBrains Mono (Code) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#fffce7',
+              400: '#ffc40e',
+              500: '#f2ab01', // Gold
+              600: '#d08100',
+              900: '#743a0f',
+            },
+            dark: {
+              bg: '#040711', // Very dark blue/slate
+              card: '#0a0f1d',
+              border: '#1b2336'
+            },
+            mongodb: '#10b981', // Emerald
+            redis: '#ef4444', // Red
+            neo4j: '#06b6d4', // Cyan
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #040711;
+      color: #cbd5e1;
+    }
+    .glass-card {
+      background: rgba(10, 15, 29, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(27, 35, 54, 0.6);
+    }
+    .glass-card:hover {
+      border-color: rgba(242, 171, 1, 0.2);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #f2ab01 0%, #ffc40e 50%, #ffffff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-mongo {
+      background: linear-gradient(to right, #10b981, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-redis {
+      background: linear-gradient(to right, #ef4444, #dc2626);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-neo4j {
+      background: linear-gradient(to right, #06b6d4, #0891b2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #040711;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(242, 171, 1, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(242, 171, 1, 0.6);
+    }
+
+    /* Spotlights */
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(27, 35, 54, 0.4) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    
+    /* Code styling adjustments */
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Custom Switch / Checkbox styles */
+    .checkbox-glow:checked {
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+  </style>
+</head>
+<body class="antialiased font-sans selection:bg-brand-500/20 selection:text-brand-400">
+
+  <!-- Technical Grid & Blur Background -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10 bg-grid-pattern"></div>
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute top-[-10%] left-[-10%] w-[50rem] h-[50rem] bg-brand-500/5 rounded-full blur-[160px] animate-pulse-slow"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[45rem] h-[45rem] bg-neo4j/5 rounded-full blur-[140px]"></div>
+    <div class="absolute top-[40%] left-[60%] w-[35rem] h-[35rem] bg-mongodb/5 rounded-full blur-[120px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+  </div>
+
+  <!-- Navigation HUD -->
+  <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl z-50 rounded-2xl border border-white/10 bg-dark-bg/60 backdrop-blur-lg shadow-2xl py-3 px-6 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex h-8 w-8 rounded-lg bg-brand-500 flex items-center justify-center text-dark-bg font-bold text-sm tracking-tighter">
+        BS
+      </a>
+      <span class="font-display font-bold text-sm tracking-tight text-white hidden sm:inline-block">
+        BlockSync<span class="text-brand-500">.Persistence</span>
+      </span>
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <a href="#architecture" class="text-xs font-mono text-slate-400 hover:text-white transition-colors">01. Architecture</a>
+      <a href="#hci-framework" class="text-xs font-mono text-slate-400 hover:text-white transition-colors">02. Human Factors</a>
+      <a href="#sync-demo" class="text-xs font-mono text-slate-400 hover:text-white transition-colors">03. Live Pipeline</a>
+      <a href="#editor-demo" class="text-xs font-mono text-slate-400 hover:text-white transition-colors">04. Graph Workspace</a>
+      <a href="#code-tab" class="text-xs font-mono text-slate-400 hover:text-white transition-colors">05. Source</a>
+    </div>
+
+    <div>
+      <a href="/" class="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 font-mono">
+        <span class="iconify" data-icon="ph:arrow-left"></span> Back
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Case Study Content -->
+  <main class="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    
+    <!-- Hero Header -->
+    <header class="max-w-5xl mx-auto mb-20 text-center sm:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-mono mb-8 reveal">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+        </span>
+        HCI & DATABASE SYSTEM CASE STUDY
+      </div>
+      
+      <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.05] mb-8 reveal" style="transition-delay: 100ms;">
+        Architecting the Flow State:<br />
+        <span class="gradient-text">Polyglot Persistence Engine.</span>
+      </h1>
+      
+      <p class="text-lg sm:text-xl text-slate-400 max-w-3xl leading-relaxed mb-10 reveal" style="transition-delay: 200ms;">
+        A custom collaborative writing infrastructure combining <strong class="text-white">MongoDB, Neo4j, and Redis</strong>. Designed to protect cognitive flow by decoupling sub-millisecond typing feedback loops from transactional persistence pipelines.
+      </p>
+
+      <!-- Project Metadata Grid (Bento Style) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mt-12 text-left reveal" style="transition-delay: 300ms;">
+        <div class="glass-card p-5 rounded-xl border border-white/5">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-1">Academic Context</div>
+          <div class="font-display font-semibold text-white">Databases II Project</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">FCSE (Grade 10/10)</div>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-white/5">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-1">My Role</div>
+          <div class="font-display font-semibold text-white">Design Technologist</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">Architecture & UX-Dev</div>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-white/5">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-1">Tech Stack</div>
+          <div class="font-display font-semibold text-white">Polyglot Architecture</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">Mongo • Neo4j • Redis</div>
+        </div>
+        <div class="glass-card p-5 rounded-xl border border-white/5">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-slate-500 mb-1">Key Outcome</div>
+          <div class="font-display font-semibold text-brand-400">99.8% Write Reduction</div>
+          <div class="text-xs text-slate-400 font-mono mt-1">via 1200ms Debounce</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Key Performance Metrics Banner -->
+    <section class="max-w-5xl mx-auto mb-24 reveal">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-md">
+        <div class="p-8 text-center bg-dark-bg/40">
+          <div class="text-4xl lg:text-5xl font-display font-bold text-white mb-2">&lt; 1ms</div>
+          <div class="text-xs font-mono uppercase tracking-widest text-slate-400">Typing Sync Latency</div>
+          <div class="text-[10px] text-slate-500 mt-2">Socket-over-RAM distribution</div>
+        </div>
+        <div class="p-8 text-center bg-dark-bg/40 border-y sm:border-y-0 sm:border-x border-white/10">
+          <div class="text-4xl lg:text-5xl font-display font-bold text-brand-400 mb-2">99.8%</div>
+          <div class="text-xs font-mono uppercase tracking-widest text-slate-400">Disk IOPS Conserved</div>
+          <div class="text-[10px] text-slate-500 mt-2">Buffer merges thousands of updates</div>
+        </div>
+        <div class="p-8 text-center bg-dark-bg/40">
+          <div class="text-4xl lg:text-5xl font-display font-bold text-neo4j mb-2">O(1)</div>
+          <div class="text-xs font-mono uppercase tracking-widest text-slate-400">Backlink Queries</div>
+          <div class="text-[10px] text-slate-500 mt-2">Graph edges eliminate regex parsers</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: The Polyglot Architecture -->
+    <section id="architecture" class="max-w-5xl mx-auto mb-32 scroll-mt-24 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">01. SYSTEM ARCHITECTURE</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-12 items-start mb-16">
+        <div class="lg:col-span-2">
+          <h2 class="font-display text-3xl font-bold text-white mb-6">Database Specialization</h2>
+          <p class="text-slate-400 leading-relaxed mb-6">
+            Relational databases hit bottlenecks when forced to manage live hierarchical arrays, real-time networking, and recursive reference mappings all at once. 
+          </p>
+          <p class="text-slate-400 leading-relaxed">
+            BlockSync delegates application states to three specialized database engines, utilizing Docker environments to maintain absolute operational separation.
+          </p>
+        </div>
+
+        <div class="lg:col-span-3 space-y-4">
+          <!-- MongoDB Card -->
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-5 border border-mongodb/10 hover:border-mongodb/30 transition-colors">
+            <span class="p-3 rounded-lg bg-mongodb/10 text-mongodb">
+              <span class="iconify text-2xl" data-icon="simple-icons:mongodb"></span>
+            </span>
+            <div>
+              <h3 class="font-display font-bold text-white text-lg mb-1">MongoDB <span class="text-xs font-mono text-mongodb ml-2">Authoritative Document Store</span></h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                Stores users, nested folders, and ordered arrays of document blocks. Document flexibility makes it optimal for structural rearrangments and rich text blocks without schemas mapping issues.
+              </p>
+            </div>
+          </div>
+
+          <!-- Neo4j Card -->
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-5 border border-neo4j/10 hover:border-neo4j/30 transition-colors">
+            <span class="p-3 rounded-lg bg-neo4j/10 text-neo4j">
+              <span class="iconify text-2xl" data-icon="simple-icons:neo4j"></span>
+            </span>
+            <div>
+              <h3 class="font-display font-bold text-white text-lg mb-1">Neo4j <span class="text-xs font-mono text-neo4j ml-2">Semantic & Permission Graph</span></h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                Maps user access boundaries, page containments, and bidirectional links (`[[wiki-links]]`). Converts expensive regex queries and recursive joins into direct O(1) graph traversals.
+              </p>
+            </div>
+          </div>
+
+          <!-- Redis Card -->
+          <div class="glass-card p-6 rounded-2xl flex items-start gap-5 border border-redis/10 hover:border-redis/30 transition-colors">
+            <span class="p-3 rounded-lg bg-redis/10 text-redis">
+              <span class="iconify text-2xl" data-icon="simple-icons:redis"></span>
+            </span>
+            <div>
+              <h3 class="font-display font-bold text-white text-lg mb-1">Redis <span class="text-xs font-mono text-redis ml-2">Volatile RAM Cache & Event Bus</span></h3>
+              <p class="text-sm text-slate-400 leading-relaxed">
+                Manages online user presence registries with automated TTL expirations, caches active documents, and acts as a Redis Pub/Sub cluster bus for distributed socket instances.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Human-Computer Interaction Standpoint -->
+    <section id="hci-framework" class="max-w-5xl mx-auto mb-32 scroll-mt-24 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">02. HUMAN FACTORS & COGNITIVE DESIGN</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <h2 class="font-display text-3xl font-bold text-white mb-8 text-center sm:text-left">Designing for the Design Technologist</h2>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="glass-card p-8 rounded-2xl border border-white/5 space-y-6">
+          <div class="h-10 w-10 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center text-xl">
+            <span class="iconify" data-icon="ph:brain-light"></span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white">Protecting the User's "Flow State"</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            In human-centered design, the motor-sensory loop relies on immediate visual feedback. Studies show that latency above **100ms** breaks the illusion of direct manipulation, introducing friction to the writing process.
+          </p>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            If the system attempts to commit changes to a persistent store (MongoDB & Neo4j) on every single keystroke, the event loop blocks, introducing slight stuttering. Decoupling the pipeline guarantees typing loops remain sub-millisecond, preserving the author's flow.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl border border-white/5 space-y-6">
+          <div class="h-10 w-10 rounded-lg bg-neo4j/10 text-neo4j flex items-center justify-center text-xl">
+            <span class="iconify" data-icon="ph:share-network-light"></span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white">Mapping Cognitive Mental Models</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Standard operating systems rely on nested folder paths—a physical model that doesn't match the human brain's semantic network. Humans retrieve memories via association (connections between concepts).
+          </p>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            By overlaying a wiki-link structure (`[[Page]]`) modeled in Neo4j, BlockSync bridges this conceptual gap. Users build associative connections dynamically, navigating workspaces through semantic associations rather than mechanical directory paths.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl border border-white/5 space-y-6">
+          <div class="h-10 w-10 rounded-lg bg-mongodb/10 text-mongodb flex items-center justify-center text-xl">
+            <span class="iconify" data-icon="ph:fingerprint-light"></span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white">Direct Manipulation of Content Blocks</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            In traditional writing tools, a document is a single string of characters. This treats the text as a monolithic canvas rather than distinct conceptual units.
+          </p>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            BlockSync implements a modular block structure. Bullet points, headers, and code arrays are distinct blocks that can be rearranged directly. This spatial alignment matches the user's intent to reorganize outlines on the fly.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl border border-white/5 space-y-6">
+          <div class="h-10 w-10 rounded-lg bg-redis/10 text-redis flex items-center justify-center text-xl">
+            <span class="iconify" data-icon="ph:eye-light"></span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-white">Visibility of System Status & Presence</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Real-time collaboration can be disorienting without proper visibility of co-presence. High-frequency network events are combined with ephemeral room caching in Redis to prevent visual clutter.
+          </p>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Collaborator indicators, active room rosters, and clean "saving..." triggers in the HUD guide the user's understanding of system stability, reinforcing user trust and reducing confusion.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Interactive Demo 1 - Twin-Channel Sync Pipeline -->
+    <section id="sync-demo" class="max-w-5xl mx-auto mb-32 scroll-mt-24 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">03. INTERACTIVE SIMULATION</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <div class="mb-10 text-center sm:text-left">
+        <h2 class="font-display text-3xl font-bold text-white mb-4">Twin-Channel Sync Pipeline</h2>
+        <p class="text-slate-400 max-w-2xl">
+          Write characters in the visual sandbox below to see the twin-channel protocol trigger. Watch how character keystrokes route through the Ephemeral RAM Channel, while persisting actions are debounced to reduce write loads.
+        </p>
+      </div>
+
+      <!-- Simulator Layout Grid -->
+      <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+        <!-- Interactive Left Card: Input & Typing area -->
+        <div class="lg:col-span-5 glass-card p-6 rounded-2xl flex flex-col justify-between border-white/5">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-xs font-mono text-slate-400">SIMULATED CLIENT COMPONENT</span>
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+            </div>
+            
+            <label for="pipelineInput" class="block text-sm font-semibold text-white mb-2">Workspace Draft</label>
+            <textarea 
+              id="pipelineInput" 
+              placeholder="Start typing here to trigger the sync pipeline events..."
+              class="w-full h-44 bg-dark-bg/60 border border-dark-border rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 font-sans resize-none"
+            ></textarea>
+          </div>
+
+          <div class="mt-6 border-t border-dark-border pt-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-brand-500/10 border border-brand-500/25 flex items-center justify-center">
+                <span class="iconify text-brand-400 text-sm" data-icon="ph:keyboard"></span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-white" id="wpmText">0 Keystrokes</div>
+                <div class="text-[10px] text-slate-400 font-mono">Real-time counter</div>
+              </div>
+            </div>
+            
+            <button 
+              id="clearPipelineBtn" 
+              class="px-4 py-2 border border-dark-border hover:bg-white/5 rounded-lg text-xs font-mono text-slate-400 hover:text-white transition-colors"
+            >
+              Reset Draft
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Right Card: The Channels diagram -->
+        <div class="lg:col-span-7 glass-card p-6 rounded-2xl border-white/5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-sm font-mono text-slate-400 mb-6">REAL-TIME PIPELINE VISUALIZATION</h3>
+            
+            <!-- The Visual Pipeline Drawing Area -->
+            <div class="relative w-full h-56 bg-dark-bg/40 rounded-xl border border-dark-border/40 overflow-hidden px-4 flex flex-col justify-around">
+              
+              <!-- Channel 1: Ephemeral socket loop -->
+              <div class="relative flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                    <span class="iconify" data-icon="ph:plugs"></span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-mono font-bold text-white block">Channel 1: Ephemeral Over-RAM</span>
+                    <span class="text-[10px] text-slate-400 font-mono block">Socket.io Broadcast • Latency &lt; 1ms</span>
+                  </div>
+                </div>
+                <!-- Channel Flow Line -->
+                <div class="flex-1 mx-4 h-[2px] bg-dark-border/60 relative overflow-hidden" id="channel1-pipe">
+                  <div class="absolute h-full w-4 bg-cyan-400/80 rounded blur-[1px] left-0 top-0 transition-all duration-300 opacity-0" id="channel1-spark"></div>
+                </div>
+                <!-- Receiving Client indicator -->
+                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400" id="collaborator-node">
+                  <span class="iconify" data-icon="ph:users"></span>
+                </div>
+              </div>
+
+              <!-- Debounce Countdown Visual -->
+              <div class="relative flex items-center justify-between z-10 border-y border-dark-border/20 py-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400" id="timer-icon">
+                    <span class="iconify" data-icon="ph:hourglass"></span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-mono font-bold text-white block">Client Debounce Buffer</span>
+                    <span class="text-[10px] text-slate-400 font-mono block" id="debounceTimerLabel">Timer: 1200ms Idle</span>
+                  </div>
+                </div>
+                <!-- Progress bar -->
+                <div class="flex-1 mx-4 h-2 bg-dark-border/40 rounded overflow-hidden">
+                  <div class="h-full bg-brand-500 w-0 transition-all duration-100 ease-linear" id="debounceProgress"></div>
+                </div>
+                <div class="text-xs font-mono text-slate-400" id="debounceTimerText">1.20s</div>
+              </div>
+
+              <!-- Channel 2: Persistent storage persistence -->
+              <div class="relative flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                    <span class="iconify" data-icon="ph:database"></span>
+                  </div>
+                  <div>
+                    <span class="text-xs font-mono font-bold text-white block">Channel 2: Persistent Storage</span>
+                    <span class="text-[10px] text-slate-400 font-mono block">MongoDB, Neo4j, Redis Writes</span>
+                  </div>
+                </div>
+                <!-- Channel Flow Line -->
+                <div class="flex-1 mx-4 h-[2px] bg-dark-border/60 relative overflow-hidden" id="channel2-pipe">
+                  <div class="absolute h-full w-8 bg-amber-500/80 rounded blur-[1px] left-0 top-0 transition-all duration-500 opacity-0" id="channel2-spark"></div>
+                </div>
+                <!-- DB indicator -->
+                <div class="flex gap-1.5" id="db-indicators">
+                  <div class="px-2 py-1 bg-mongodb/10 border border-mongodb/20 rounded text-[9px] font-mono text-mongodb">Mongo</div>
+                  <div class="px-2 py-1 bg-neo4j/10 border border-neo4j/20 rounded text-[9px] font-mono text-neo4j">Neo4j</div>
+                  <div class="px-2 py-1 bg-redis/10 border border-redis/20 rounded text-[9px] font-mono text-redis">Redis</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Live Event Logs console -->
+          <div class="mt-4">
+            <div class="text-xs font-mono text-slate-400 mb-2 flex justify-between">
+              <span>SYNC PIPELINE ACTIVITY LOGS</span>
+              <span class="text-brand-500 hover:underline cursor-pointer text-[10px]" id="clearLogs">CLEAR</span>
+            </div>
+            <div id="logsConsole" class="h-28 bg-[#02050b] border border-dark-border/60 rounded-xl p-3 font-mono text-[10px] overflow-y-auto space-y-1.5 scroll-smooth text-slate-400">
+              <div class="text-slate-500">&gt; System initialized. Awaiting keyboard interrupts...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Live Editor & Neo4j workspace graph explorer -->
+    <section id="editor-demo" class="max-w-5xl mx-auto mb-32 scroll-mt-24 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">04. KNOWLEDGE BASE & BACKLINKS</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <div class="mb-10 text-center sm:text-left">
+        <h2 class="font-display text-3xl font-bold text-white mb-4">Workspace Knowledge Graph</h2>
+        <p class="text-slate-400 max-w-2xl">
+          Experience the bidirectional linking engine. Modify the active document's contents below by writing wiki-style page links using double brackets: <code class="text-white bg-white/10 px-1 rounded">[[Page Title]]</code>. Watch the Neo4j-simulated graph map relationships in real-time.
+        </p>
+      </div>
+
+      <!-- Split Screen layout for Editor & Graph -->
+      <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- Editor Side (Notion Style) -->
+        <div class="lg:col-span-5 glass-card rounded-2xl border-white/5 flex flex-col justify-between overflow-hidden">
+          
+          <!-- Document HUD header -->
+          <div class="bg-dark-bg/60 border-b border-dark-border/40 py-3 px-6 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded bg-brand-500 flex items-center justify-center text-dark-bg text-[8px] font-bold">P</span>
+              <span class="text-xs font-mono text-white" id="activeDocTitle">Interactive Notes</span>
+            </div>
+            <span class="text-[10px] font-mono text-slate-500" id="syncStatus">Saved to Local Graph</span>
+          </div>
+
+          <!-- Main Block Editor Canvas -->
+          <div class="p-6 flex-1 space-y-4 max-h-[360px] overflow-y-auto" id="blockEditor">
+            <!-- Dynamic blocks injected by JS -->
+          </div>
+
+          <!-- Editor Actions panel -->
+          <div class="p-4 bg-dark-bg/30 border-t border-dark-border/30 flex items-center justify-between">
+            <div class="flex gap-2">
+              <button 
+                id="addTextBlockBtn" 
+                class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-mono flex items-center gap-1.5 text-slate-300 transition-colors"
+                title="Add standard text block"
+              >
+                <span class="iconify" data-icon="ph:text-t"></span> Text
+              </button>
+              <button 
+                id="addCheckBlockBtn" 
+                class="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-mono flex items-center gap-1.5 text-slate-300 transition-colors"
+                title="Add checklist block"
+              >
+                <span class="iconify" data-icon="ph:check-square"></span> Task
+              </button>
+            </div>
+
+            <!-- Backlinks HUD -->
+            <div class="text-[10px] font-mono text-slate-400 flex items-center gap-1.5" id="backlinksHud">
+              <span>Backlinks (0)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- D3 Graph Visualizer Side -->
+        <div class="lg:col-span-7 glass-card rounded-2xl border-white/5 flex flex-col justify-between overflow-hidden relative">
+          
+          <!-- Graph Toolbar -->
+          <div class="bg-dark-bg/60 border-b border-dark-border/40 py-3 px-6 flex justify-between items-center z-10">
+            <span class="text-xs font-mono text-slate-400">NEO4J GRAPH LAYOUT REPRESENTATION</span>
+            <div class="flex items-center gap-2">
+              <button id="addNodeBtn" class="px-2 py-1 bg-neo4j/10 hover:bg-neo4j/20 border border-neo4j/25 text-neo4j rounded text-[10px] font-mono transition-colors">
+                + Page
+              </button>
+              <button id="recenterGraphBtn" class="p-1 hover:bg-white/5 rounded text-slate-400 hover:text-white transition-colors" title="Recenter Graph">
+                <span class="iconify text-sm" data-icon="ph:arrows-out-cardinal"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- D3 SVG Container -->
+          <div class="flex-1 w-full h-[360px] bg-[#02050b]/40 relative overflow-hidden" id="d3Container">
+            <svg id="workspaceGraph" class="w-full h-full cursor-grab active:cursor-grabbing"></svg>
+            
+            <!-- Ambient Graph Hint Overlay -->
+            <div class="absolute bottom-4 left-4 p-3 rounded-lg bg-dark-bg/80 border border-dark-border text-[9px] font-mono text-slate-500 pointer-events-none space-y-1 backdrop-blur-md">
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-brand-500 inline-block"></span> Active Node</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-neo4j inline-block"></span> Page Node</div>
+              <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-500 inline-block"></span> Unresolved Reference</div>
+            </div>
+          </div>
+
+          <!-- Detail Status Info Panel -->
+          <div class="p-4 bg-dark-bg/30 border-t border-dark-border/30 flex items-center justify-between text-xs font-mono text-slate-400">
+            <div>
+              <span>Nodes: <strong class="text-white" id="nodeCount">0</strong></span>
+              <span class="mx-2">•</span>
+              <span>Links: <strong class="text-white" id="linkCount">0</strong></span>
+            </div>
+            <div>
+              <span class="text-slate-500">Draggable Physics Enabled</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 5: Technical Architecture Tabs -->
+    <section id="code-tab" class="max-w-5xl mx-auto mb-32 scroll-mt-24 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">05. CODE IMPLEMENTATION & DATA SCHEMA</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <div class="mb-10 text-center sm:text-left">
+        <h2 class="font-display text-3xl font-bold text-white mb-4">Architecture Codebase</h2>
+        <p class="text-slate-400 max-w-2xl">
+          Review the core algorithms and schemas powering BlockSync, showing how databases coordinate states without creating query blocking cycles.
+        </p>
+      </div>
+
+      <!-- Tab component container -->
+      <div class="glass-card rounded-2xl border-white/5 overflow-hidden">
+        
+        <!-- Tab Headers -->
+        <div class="flex border-b border-dark-border bg-dark-bg/60 overflow-x-auto">
+          <button 
+            data-tab="tab-mongo"
+            class="tab-btn active px-6 py-4 border-b-2 border-brand-500 text-xs font-mono font-bold text-white transition-all whitespace-nowrap bg-white/5"
+          >
+            MONGO SCHEMAS
+          </button>
+          <button 
+            data-tab="tab-neo4j"
+            class="tab-btn px-6 py-4 border-b-2 border-transparent text-xs font-mono font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap"
+          >
+            CYPHER WIKI-LINKS
+          </button>
+          <button 
+            data-tab="tab-reconcile"
+            class="tab-btn px-6 py-4 border-b-2 border-transparent text-xs font-mono font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap"
+          >
+            GRAPH RECONCILIATION
+          </button>
+          <button 
+            data-tab="tab-redis"
+            class="tab-btn px-6 py-4 border-b-2 border-transparent text-xs font-mono font-bold text-slate-400 hover:text-white transition-all whitespace-nowrap"
+          >
+            REDIS PRESENCE
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-6 bg-[#02050b]/80 relative font-mono text-xs overflow-x-auto leading-relaxed max-h-[460px] overflow-y-auto">
+          
+          <!-- MongoDB schema code -->
+          <div id="tab-mongo" class="tab-content block">
+            <pre class="text-slate-300"><code class="language-javascript">// From backend/models/Schemas.js
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const BlockSchema = new Schema({
+  id: { type: String, required: true },
+  type: {
+    type: String,
+    enum: ['heading_1', 'heading_2', 'paragraph', 'bulleted_list', 'checklist'],
+    default: 'paragraph'
+  },
+  content: { type: String, default: '' },
+  checked: { type: Boolean, default: false }
+}, { _id: false });
+
+const DocumentSchema = new Schema({
+  title: { type: String, required: true, default: 'Untitled Page' },
+  workspaceId: { type: Schema.Types.ObjectId, ref: 'Workspace', required: true },
+  folderId: { type: Schema.Types.ObjectId, ref: 'Folder', default: null },
+  blocks: { type: [BlockSchema], default: [] }
+}, { timestamps: true });
+
+module.exports = {
+  Document: mongoose.model('Document', DocumentSchema),
+  BlockSchema
+};</code></pre>
+          </div>
+
+          <!-- Neo4j / Cypher Code -->
+          <div id="tab-neo4j" class="tab-content hidden">
+            <pre class="text-slate-300"><code class="language-javascript">// From backend/services/graphService.js
+// Parses Wiki-Links and writes them in Neo4j in a single Transaction
+async syncWikiLinks(fromPageId, blocks) {
+  const session = driver.session();
+  try {
+    const linkPattern = /\[\[(.*?)\]\]/g;
+    const targetTitles = new Set();
+
+    blocks.forEach(block => {
+      if (block.content) {
+        let match;
+        while ((match = linkPattern.exec(block.content)) !== null) {
+          targetTitles.add(match[1].trim());
+        }
+      }
+    });
+    const targets = Array.from(targetTitles);
+
+    // 1. Delete previous outgoing links to establish a clean slate
+    await session.executeWrite(tx =>
+      tx.run(
+        'MATCH (from:Page {id: $fromPageId})-[r:LINKS_TO]->(:Page) DELETE r',
+        { fromPageId: fromPageId.toString() }
+      )
+    );
+
+    if (targets.length === 0) return;
+
+    // 2. Merge target pages and link them
+    await session.executeWrite(tx =>
+      tx.run(
+        `MATCH (from:Page {id: $fromPageId})
+         UNWIND $targets AS targetTitle
+         MERGE (to:Page {title: targetTitle})
+         ON CREATE SET to.id = randomUUID()
+         MERGE (from)-[:LINKS_TO]->(to)`,
+        { fromPageId: fromPageId.toString(), targets }
+      )
+    );
+  } finally {
+    await session.close();
+  }
+}</code></pre>
+          </div>
+
+          <!-- Reconciliation Code -->
+          <div id="tab-reconcile" class="tab-content hidden">
+            <pre class="text-slate-300"><code class="language-javascript">// From backend/services/graphService.js
+// Runs periodically to reconcile graph state with authoritative MongoDB
+async syncWorkspaceFromMongo(workspaceId, mongoDocs) {
+  const session = driver.session();
+  try {
+    const mongoIds = mongoDocs.map(d => d.id.toString());
+
+    // 1. Rebuild current pages and link them to the workspace node
+    if (mongoDocs.length > 0) {
+      await session.executeWrite(tx =>
+        tx.run(
+          `MERGE (w:Workspace {id: $workspaceId})
+           WITH w
+           UNWIND $pages AS page
+           MERGE (p:Page {id: page.id})
+           SET p.title = page.title
+           MERGE (w)-[:CONTAINS]->(p)`,
+          {
+            workspaceId: workspaceId.toString(),
+            pages: mongoDocs.map(d => ({ id: d.id, title: d.title }))
+          }
+        )
+      );
+    }
+
+    // 2. Delete nodes in Neo4j that are no longer in MongoDB
+    await session.executeWrite(tx =>
+      tx.run(
+        `MATCH (w:Workspace {id: $workspaceId})-[:CONTAINS]->(p:Page)
+         WHERE NOT p.id IN $mongoIds
+         DETACH DELETE p`,
+        { workspaceId: workspaceId.toString(), mongoIds }
+      )
+    );
+  } finally {
+    await session.close();
+  }
+}</code></pre>
+          </div>
+
+          <!-- Redis presence registry -->
+          <div id="tab-redis" class="tab-content hidden">
+            <pre class="text-slate-300"><code class="language-javascript">// From backend/sockets/syncHandler.js
+// Utilizes ephemeral cache for presence registries
+const Redis = require('ioredis');
+const redis = new Redis(process.env.REDIS_URL);
+
+async function registerPresence(documentId, socketId, user) {
+  const presenceKey = `presence:${documentId}:${socketId}`;
+  
+  // Save user info in Redis, expiring after 1 Hour to clear inactive nodes
+  await redis.set(
+    presenceKey, 
+    JSON.stringify({
+      username: user.username,
+      avatarColor: user.avatarColor,
+      activeAt: Date.now()
+    }),
+    'EX',
+    3600 
+  );
+}
+
+async function getOnlineUsers(documentId) {
+  const pattern = `presence:${documentId}:*`;
+  const keys = await redis.keys(pattern);
+  if (keys.length === 0) return [];
+  
+  const values = await redis.mget(keys);
+  return values.map(val => JSON.parse(val));
+}</code></pre>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Retrospective & Architecture Tradeoffs -->
+    <section class="max-w-4xl mx-auto mb-32 reveal">
+      <div class="flex items-center gap-4 mb-8">
+        <div class="text-xs font-mono text-brand-500">06. ARCHITECTURE RETROSPECTIVE</div>
+        <div class="h-px flex-1 bg-gradient-to-r from-brand-500/20 to-transparent"></div>
+      </div>
+
+      <h2 class="font-display text-3xl font-bold text-white mb-8">System Trade-Offs</h2>
+
+      <div class="space-y-8">
+        <div class="border-l-2 border-brand-500 pl-6 space-y-2">
+          <h3 class="text-white font-bold">Ephemeral Typing Latency vs. System Fault Tolerance</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            By keeping characters inside the client's volatile memory buffer during the 1200ms debounce interval, we shield the databases from high-frequency write operations. However, this optimization exposes users to minor data loss risks: if the browser process crashes mid-sentence, characters written since the last database write are lost.
+          </p>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            <strong>HCI Justification:</strong> We prioritized cognitive comfort (smooth, stutter-free interfaces) over absolute persistent consistency of incomplete words. A 1200ms loss boundary is negligible compared to the mental exhaustion of laggy writing components.
+          </p>
+        </div>
+
+        <div class="border-l-2 border-neo4j pl-6 space-y-2">
+          <h3 class="text-white font-bold">The Conflict Resolution Challenge</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Since this project was built without complex OT (Operational Transformations) or CRDTs (Conflict-free Replicated Data Types), concurrent edits hitting the same document block are resolved by standard "last-write-wins" database operations.
+          </p>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            <strong>Future Roadmap:</strong> Implementing a block-level CRDT algorithm (e.g., Yjs) inside the debounced pipeline would allow multiple users to edit the same blocks simultaneously, resolving merge collisions deterministically.
+          </p>
+        </div>
+
+        <div class="border-l-2 border-mongodb pl-6 space-y-2">
+          <h3 class="text-white font-bold">Polyglot Persistence Drift</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Distributing application state across MongoDB and Neo4j opens up risks of database divergence. If a page is renamed or deleted, but the Neo4j API call fails, the graph nodes become out of alignment.
+          </p>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            <strong>Mitigation Strategy:</strong> We built a background Graph Reconciliation cron script that queries MongoDB for active document IDs and synchronizes the Neo4j graph nodes dynamically, cleaning up dead references.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Clean Footer -->
+  <footer class="border-t border-white/5 bg-dark-bg/40 py-12">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-slate-500 text-sm font-mono">© 2026 Thomas Graphics • HCI Case Study</div>
+      <div class="flex gap-6 text-sm">
+        <a href="https://www.linkedin.com/in/tomcegraphics/" target="_blank" class="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
+        <a href="https://github.com/TomceGraphics" target="_blank" class="text-slate-400 hover:text-white transition-colors">GitHub</a>
+        <a href="mailto:tomce.graphics@gmail.com" class="text-brand-500 font-bold hover:text-brand-400 transition-colors">Contact Me</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTING FOR INTERACTIVE DEMOS -->
+  <script>
+    // Reveal Observer for scroll animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ----------------------------------------------------
+    // TAB COMPONENT IMPLEMENTATION
+    // ----------------------------------------------------
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Reset buttons
+        tabBtns.forEach(b => {
+          b.classList.remove('active', 'text-white', 'bg-white/5', 'border-brand-500');
+          b.classList.add('text-slate-400', 'border-transparent');
+        });
+        // Reset contents
+        tabContents.forEach(c => {
+          c.classList.add('hidden');
+          c.classList.remove('block');
+        });
+
+        // Set active button
+        btn.classList.add('active', 'text-white', 'bg-white/5', 'border-brand-500');
+        btn.classList.remove('text-slate-400', 'border-transparent');
+
+        // Set active content
+        const targetId = btn.getAttribute('data-tab');
+        const targetContent = document.getElementById(targetId);
+        if (targetContent) {
+          targetContent.classList.remove('hidden');
+          targetContent.classList.add('block');
+        }
+      });
+    });
+
+    // ----------------------------------------------------
+    // DEMO 1: TWIN-CHANNEL SYNC PIPELINE
+    // ----------------------------------------------------
+    const pipelineInput = document.getElementById('pipelineInput');
+    const clearPipelineBtn = document.getElementById('clearPipelineBtn');
+    const wpmText = document.getElementById('wpmText');
+    const logsConsole = document.getElementById('logsConsole');
+    const clearLogs = document.getElementById('clearLogs');
+
+    const channel1Spark = document.getElementById('channel1-spark');
+    const channel2Spark = document.getElementById('channel2-spark');
+    const collaboratorNode = document.getElementById('collaborator-node');
+    const dbIndicators = document.getElementById('db-indicators');
+    const debounceProgress = document.getElementById('debounceProgress');
+    const debounceTimerText = document.getElementById('debounceTimerText');
+
+    let keystrokeCount = 0;
+    let debounceTimer = null;
+    let debounceStartTime = 0;
+    const DEBOUNCE_DURATION = 1200; // ms
+    let progressInterval = null;
+
+    function addLog(message, type = 'info') {
+      const time = new Date().toLocaleTimeString();
+      let colorClass = 'text-slate-400';
+      if (type === 'socket') colorClass = 'text-cyan-400';
+      else if (type === 'db') colorClass = 'text-brand-400';
+      else if (type === 'timer') colorClass = 'text-slate-500';
+
+      const entry = document.createElement('div');
+      entry.innerHTML = `<span class="text-slate-600">[${time}]</span> <span class="${colorClass}">${message}</span>`;
+      logsConsole.appendChild(entry);
+      logsConsole.scrollTop = logsConsole.scrollHeight;
+    }
+
+    function triggerSocketSpark() {
+      // Rapid visual light down Channel 1
+      channel1Spark.style.transition = 'none';
+      channel1Spark.style.left = '0%';
+      channel1Spark.style.opacity = '1';
+      
+      // Force repaint
+      channel1Spark.offsetHeight;
+
+      channel1Spark.style.transition = 'left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      channel1Spark.style.left = '100%';
+
+      // Node highlight
+      collaboratorNode.classList.remove('bg-slate-800', 'text-slate-400');
+      collaboratorNode.classList.add('bg-cyan-500/20', 'border-cyan-500/40', 'text-cyan-400');
+
+      setTimeout(() => {
+        channel1Spark.style.opacity = '0';
+        collaboratorNode.classList.add('bg-slate-800', 'text-slate-400');
+        collaboratorNode.classList.remove('bg-cyan-500/20', 'border-cyan-500/40', 'text-cyan-400');
+      }, 300);
+    }
+
+    function triggerDbSpark() {
+      // Heavy visual flash along Channel 2
+      channel2Spark.style.transition = 'none';
+      channel2Spark.style.left = '0%';
+      channel2Spark.style.opacity = '1';
+      
+      channel2Spark.offsetHeight;
+
+      channel2Spark.style.transition = 'left 0.6s cubic-bezier(0.1, 0.8, 0.3, 1)';
+      channel2Spark.style.left = '100%';
+
+      // Highlight database chips
+      const chips = dbIndicators.querySelectorAll('div');
+      chips.forEach((chip, i) => {
+        setTimeout(() => {
+          chip.classList.add('scale-105', 'bg-opacity-30', 'border-opacity-60');
+          chip.classList.remove('bg-opacity-10', 'border-opacity-20');
+        }, i * 150);
+      });
+
+      setTimeout(() => {
+        channel2Spark.style.opacity = '0';
+        chips.forEach((chip) => {
+          chip.classList.remove('scale-105', 'bg-opacity-30', 'border-opacity-60');
+          chip.classList.add('bg-opacity-10', 'border-opacity-20');
+        });
+      }, 900);
+    }
+
+    function startProgressTimer() {
+      clearInterval(progressInterval);
+      debounceStartTime = Date.now();
+      
+      progressInterval = setInterval(() => {
+        const elapsed = Date.now() - debounceStartTime;
+        const percent = Math.min((elapsed / DEBOUNCE_DURATION) * 100, 100);
+        
+        debounceProgress.style.width = `${percent}%`;
+        const secondsRemaining = Math.max(0, (DEBOUNCE_DURATION - elapsed) / 1000).toFixed(2);
+        debounceTimerText.textContent = `${secondsRemaining}s`;
+
+        if (percent >= 100) {
+          clearInterval(progressInterval);
+        }
+      }, 20);
+    }
+
+    function resetProgressTimer() {
+      clearInterval(progressInterval);
+      debounceProgress.style.width = '0%';
+      debounceTimerText.textContent = '1.20s';
+    }
+
+    pipelineInput.addEventListener('input', (e) => {
+      keystrokeCount++;
+      wpmText.textContent = `${keystrokeCount} Keystrokes`;
+
+      // Character socket sync
+      const char = e.data || ' ';
+      triggerSocketSpark();
+      addLog(`Socket: Transmitting keystroke '${char}' to collaborators`, 'socket');
+
+      // Setup/Reset Persistence Debouncer
+      resetProgressTimer();
+      startProgressTimer();
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        addLog(`System: User idle (1200ms). Bundling payload for write operations.`, 'timer');
+        addLog(`Database: Writing updated structures to MongoDB`, 'db');
+        addLog(`Graph: Syncing wiki-links inside Neo4j engine`, 'db');
+        addLog(`Cache: Invalidating and rebuilding Redis document keys`, 'db');
+        triggerDbSpark();
+        resetProgressTimer();
+      }, DEBOUNCE_DURATION);
+    });
+
+    clearPipelineBtn.addEventListener('click', () => {
+      pipelineInput.value = '';
+      keystrokeCount = 0;
+      wpmText.textContent = '0 Keystrokes';
+      resetProgressTimer();
+      clearTimeout(debounceTimer);
+      addLog(`System: Draft reset. Counter initialized.`);
+    });
+
+    clearLogs.addEventListener('click', () => {
+      logsConsole.innerHTML = '<div class="text-slate-500">&gt; System initialized. Awaiting keyboard interrupts...</div>';
+    });
+
+    // ----------------------------------------------------
+    // DEMO 2: WORKSPACE GRAPH & BLOCK EDITOR (D3 & NOTION)
+    // ----------------------------------------------------
+    const activeDocTitle = document.getElementById('activeDocTitle');
+    const syncStatus = document.getElementById('syncStatus');
+    const blockEditor = document.getElementById('blockEditor');
+    const addTextBlockBtn = document.getElementById('addTextBlockBtn');
+    const addCheckBlockBtn = document.getElementById('addCheckBlockBtn');
+    const backlinksHud = document.getElementById('backlinksHud');
+
+    // Pre-populated document structures
+    const documents = {
+      'doc-index': {
+        title: 'Project Index',
+        blocks: [
+          { id: 'b1', type: 'heading_1', content: 'Project Workspace: BlockSync' },
+          { id: 'b2', type: 'paragraph', content: 'This workspace documents the development of our polyglot collaborative environment. Review the [[Database Design]] schemas and verify current tasks in [[Project Schedule]].' },
+          { id: 'b3', type: 'heading_2', content: 'Primary Objectives' },
+          { id: 'b4', type: 'checklist', content: 'Implement Socket.io clustering via Redis Pub/Sub', checked: true },
+          { id: 'b5', type: 'checklist', content: 'Reconciliation script validation against MongoDB', checked: false }
+        ]
+      },
+      'doc-db': {
+        title: 'Database Design',
+        blocks: [
+          { id: 'b6', type: 'heading_1', content: 'Polyglot Persistence Layer' },
+          { id: 'b7', type: 'paragraph', content: 'Our application relies on three distinct layers. Read the [[Performance Cache]] configuration for speed details. Refer to the [[Project Index]] for general context.' }
+        ]
+      },
+      'doc-schedule': {
+        title: 'Project Schedule',
+        blocks: [
+          { id: 'b8', type: 'heading_1', content: 'Milestone Timelines' },
+          { id: 'b9', type: 'paragraph', content: 'Review development deliverables. Reach out to advisors or read the [[Database Design]] for design boundaries.' }
+        ]
+      },
+      'doc-cache': {
+        title: 'Performance Cache',
+        blocks: [
+          { id: 'b10', type: 'heading_1', content: 'Redis Integration Guidelines' },
+          { id: 'b11', type: 'paragraph', content: 'Documents are cached at a key pattern to prevent unnecessary MongoDB reads. Wiki links are synced straight to [[Database Design]].' }
+        ]
+      }
+    };
+
+    let activeDocId = 'doc-index';
+
+    // Graph Data structure for D3 representation
+    let graphData = {
+      nodes: [
+        { id: 'doc-index', title: 'Project Index', exists: true },
+        { id: 'doc-db', title: 'Database Design', exists: true },
+        { id: 'doc-schedule', title: 'Project Schedule', exists: true },
+        { id: 'doc-cache', title: 'Performance Cache', exists: true }
+      ],
+      links: [
+        { source: 'doc-index', target: 'doc-db' },
+        { source: 'doc-index', target: 'doc-schedule' },
+        { source: 'doc-db', target: 'doc-index' },
+        { source: 'doc-schedule', target: 'doc-db' },
+        { source: 'doc-cache', target: 'doc-db' }
+      ]
+    };
+
+    // Parse Wiki links in the active document and synchronize Graph links
+    function updateWikiLinksFromBlocks() {
+      const doc = documents[activeDocId];
+      if (!doc) return;
+
+      const linkPattern = /\[\[(.*?)\]\]/g;
+      const targetTitles = new Set();
+
+      doc.blocks.forEach(block => {
+        let match;
+        while ((match = linkPattern.exec(block.content)) !== null) {
+          targetTitles.add(match[1].trim());
+        }
+      });
+
+      // Clear existing outgoing links from active document
+      graphData.links = graphData.links.filter(link => {
+        const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+        return sourceId !== activeDocId;
+      });
+
+      // Map found target titles to nodes, creating unresolved references if necessary
+      targetTitles.forEach(title => {
+        // Find if page exists in document database
+        let targetDocId = null;
+        for (const [key, value] of Object.entries(documents)) {
+          if (value.title.toLowerCase() === title.toLowerCase()) {
+            targetDocId = key;
+            break;
+          }
+        }
+
+        if (targetDocId) {
+          // Links to existing document
+          graphData.links.push({ source: activeDocId, target: targetDocId });
+        } else {
+          // Check if we already have an unresolved node for this title
+          let mockId = `mock-${title.toLowerCase().replace(/\s+/g, '-')}`;
+          let nodeExists = graphData.nodes.find(n => n.id === mockId);
+          
+          if (!nodeExists) {
+            graphData.nodes.push({ id: mockId, title: title, exists: false });
+          }
+          graphData.links.push({ source: activeDocId, target: mockId });
+        }
+      });
+
+      // Filter out orphan unresolved nodes (no incoming links)
+      const outgoingTargets = new Set(graphData.links.map(l => typeof l.target === 'object' ? l.target.id : l.target));
+      graphData.nodes = graphData.nodes.filter(node => {
+        if (node.exists) return true; // Keep permanent docs
+        return outgoingTargets.has(node.id); // Keep unresolved nodes if they are targeted
+      });
+
+      // Update counters
+      document.getElementById('nodeCount').textContent = graphData.nodes.length;
+      document.getElementById('linkCount').textContent = graphData.links.length;
+
+      // Update Backlinks HUD
+      updateBacklinksCount();
+
+      // Trigger D3 redraw
+      updateD3Graph();
+    }
+
+    function updateBacklinksCount() {
+      const backlinks = [];
+      graphData.links.forEach(link => {
+        const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+        const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+        if (targetId === activeDocId) {
+          const sourceNode = graphData.nodes.find(n => n.id === sourceId);
+          if (sourceNode) {
+            backlinks.push(sourceNode.title);
+          }
+        }
+      });
+
+      backlinksHud.innerHTML = backlinks.length > 0 
+        ? `<span class="iconify" data-icon="ph:link-bold"></span> Linked by: <strong class="text-white">${backlinks.join(', ')}</strong>` 
+        : `<span>No Backlinks found</span>`;
+    }
+
+    // Block editor renderer
+    function renderBlockEditor() {
+      const doc = documents[activeDocId];
+      activeDocTitle.textContent = doc.title;
+      blockEditor.innerHTML = '';
+
+      doc.blocks.forEach((block, index) => {
+        const blockContainer = document.createElement('div');
+        blockContainer.className = 'group flex items-start gap-3 relative hover:bg-white/5 p-1.5 rounded-lg transition-colors';
+        blockContainer.dataset.id = block.id;
+
+        // Drag handle
+        const dragHandle = document.createElement('div');
+        dragHandle.className = 'opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-white cursor-grab transition-opacity mt-0.5';
+        dragHandle.innerHTML = '<span class="iconify text-sm" data-icon="ph:dots-six-vertical"></span>';
+        
+        let blockContent = '';
+
+        if (block.type === 'heading_1') {
+          blockContainer.innerHTML = `
+            <div class="opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-white cursor-grab mt-1"><span class="iconify text-sm" data-icon="ph:dots-six-vertical"></span></div>
+            <input type="text" class="flex-1 font-display font-bold text-2xl text-white bg-transparent outline-none border-b border-transparent focus:border-dark-border py-1" value="${block.content}">
+          `;
+        } else if (block.type === 'heading_2') {
+          blockContainer.innerHTML = `
+            <div class="opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-white cursor-grab mt-1"><span class="iconify text-sm" data-icon="ph:dots-six-vertical"></span></div>
+            <input type="text" class="flex-1 font-display font-semibold text-lg text-white bg-transparent outline-none border-b border-transparent focus:border-dark-border py-1" value="${block.content}">
+          `;
+        } else if (block.type === 'paragraph') {
+          blockContainer.innerHTML = `
+            <div class="opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-white cursor-grab mt-0.5"><span class="iconify text-sm" data-icon="ph:dots-six-vertical"></span></div>
+            <textarea class="flex-1 text-sm bg-transparent outline-none border-b border-transparent focus:border-dark-border resize-none h-auto py-0.5 text-slate-300" rows="1">${block.content}</textarea>
+          `;
+        } else if (block.type === 'checklist') {
+          const checkedAttr = block.checked ? 'checked' : '';
+          const checkedClass = block.checked ? 'line-through text-slate-500' : 'text-slate-300';
+          blockContainer.innerHTML = `
+            <div class="opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-white cursor-grab mt-0.5"><span class="iconify text-sm" data-icon="ph:dots-six-vertical"></span></div>
+            <input type="checkbox" ${checkedAttr} class="checkbox-glow mt-1.5 h-4.5 w-4.5 rounded border-dark-border bg-dark-bg text-emerald-500 focus:ring-0 focus:ring-offset-0">
+            <input type="text" class="flex-1 text-sm ${checkedClass} bg-transparent outline-none border-b border-transparent focus:border-dark-border" value="${block.content}">
+          `;
+        }
+
+        // Add Delete Button on hover
+        const delBtn = document.createElement('button');
+        delBtn.className = 'opacity-0 group-hover:opacity-100 p-1 text-slate-600 hover:text-red-400 transition-opacity self-center ml-auto';
+        delBtn.innerHTML = '<span class="iconify text-sm" data-icon="ph:trash-bold"></span>';
+        delBtn.addEventListener('click', () => {
+          doc.blocks.splice(index, 1);
+          renderBlockEditor();
+          updateWikiLinksFromBlocks();
+        });
+        blockContainer.appendChild(delBtn);
+
+        // Bind update triggers to inputs
+        const textInput = blockContainer.querySelector('input[type="text"], textarea');
+        if (textInput) {
+          // Adjust height of textarea dynamically
+          if (block.type === 'paragraph') {
+            textInput.style.height = 'auto';
+            textInput.style.height = `${textInput.scrollHeight}px`;
+          }
+
+          textInput.addEventListener('input', (e) => {
+            block.content = e.target.value;
+            if (block.type === 'paragraph') {
+              textInput.style.height = 'auto';
+              textInput.style.height = `${textInput.scrollHeight}px`;
+            }
+            
+            syncStatus.textContent = 'Saving...';
+            syncStatus.classList.add('text-brand-400');
+            
+            // Re-sync Graph on input
+            debounceGraphUpdate();
+          });
+        }
+
+        const checkEl = blockContainer.querySelector('input[type="checkbox"]');
+        if (checkEl) {
+          checkEl.addEventListener('change', (e) => {
+            block.checked = e.target.checked;
+            const itemInput = blockContainer.querySelector('input[type="text"]');
+            if (e.target.checked) {
+              itemInput.classList.add('line-through', 'text-slate-500');
+              itemInput.classList.remove('text-slate-300');
+            } else {
+              itemInput.classList.remove('line-through', 'text-slate-500');
+              itemInput.classList.add('text-slate-300');
+            }
+          });
+        }
+
+        blockEditor.appendChild(blockContainer);
+      });
+    }
+
+    let graphDebounceTimer = null;
+    function debounceGraphUpdate() {
+      clearTimeout(graphDebounceTimer);
+      graphDebounceTimer = setTimeout(() => {
+        updateWikiLinksFromBlocks();
+        syncStatus.textContent = 'Saved to Local Graph';
+        syncStatus.classList.remove('text-brand-400');
+      }, 800);
+    }
+
+    // Add Block bindings
+    addTextBlockBtn.addEventListener('click', () => {
+      const doc = documents[activeDocId];
+      const newId = `b-${Date.now()}`;
+      doc.blocks.push({ id: newId, type: 'paragraph', content: 'A new paragraph...' });
+      renderBlockEditor();
+      updateWikiLinksFromBlocks();
+    });
+
+    addCheckBlockBtn.addEventListener('click', () => {
+      const doc = documents[activeDocId];
+      const newId = `b-${Date.now()}`;
+      doc.blocks.push({ id: newId, type: 'checklist', content: 'New milestone criteria', checked: false });
+      renderBlockEditor();
+      updateWikiLinksFromBlocks();
+    });
+
+    // ----------------------------------------------------
+    // D3.JS PHYSICS GRAPH DRAWING
+    // ----------------------------------------------------
+    const svg = d3.select("#workspaceGraph");
+    const container = document.getElementById('d3Container');
+    
+    let width = container.clientWidth;
+    let height = container.clientHeight;
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      svg.attr("width", width).attr("height", height);
+    });
+
+    // Setup arrow markers for directed links
+    svg.append("defs").append("marker")
+      .attr("id", "arrow")
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 18)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-4L9,0L0,4")
+      .attr("fill", "#1e293b");
+
+    const g = svg.append("g"); // Main SVG group for panning/zooming
+
+    // Setup zoom behaviors
+    const zoom = d3.zoom()
+      .scaleExtent([0.4, 2])
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+      });
+    svg.call(zoom);
+
+    document.getElementById('recenterGraphBtn').addEventListener('click', () => {
+      svg.transition().duration(750).call(
+        zoom.transform,
+        d3.zoomIdentity.translate(0, 0).scale(1)
+      );
+    });
+
+    // Setup D3 Force Simulation
+    const simulation = d3.forceSimulation()
+      .force("link", d3.forceLink().id(d => d.id).distance(100))
+      .force("charge", d3.forceManyBody().strength(-200))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("collision", d3.forceCollide().radius(40));
+
+    function updateD3Graph() {
+      // 1. Data Join Links
+      let link = g.selectAll(".link")
+        .data(graphData.links, d => `${d.source.id || d.source}-${d.target.id || d.target}`);
+
+      // Exit old links
+      link.exit().remove();
+
+      // Enter new links
+      let linkEnter = link.enter().append("line")
+        .attr("class", "link")
+        .attr("stroke", "#1e293b")
+        .attr("stroke-width", 2)
+        .attr("marker-end", "url(#arrow)");
+
+      link = linkEnter.merge(link);
+
+      // 2. Data Join Nodes
+      let node = g.selectAll(".node")
+        .data(graphData.nodes, d => d.id);
+
+      // Exit old nodes
+      node.exit().remove();
+
+      // Enter new nodes
+      let nodeEnter = node.enter().append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
+
+      // Append circle representation
+      nodeEnter.append("circle")
+        .attr("r", 10)
+        .attr("stroke-width", 2);
+
+      // Append text titles
+      nodeEnter.append("text")
+        .attr("dx", 14)
+        .attr("dy", 4)
+        .attr("font-size", "10px")
+        .attr("font-family", "Space Grotesk, sans-serif")
+        .attr("font-weight", "bold");
+
+      node = nodeEnter.merge(node);
+
+      // Style nodes dynamically based on active state and unresolved references
+      node.select("circle")
+        .transition()
+        .duration(300)
+        .attr("fill", d => {
+          if (d.id === activeDocId) return '#f2ab01'; // Gold active
+          return d.exists ? '#06b6d4' : '#475569'; // Cyan page vs Slate unresolved
+        })
+        .attr("stroke", d => {
+          if (d.id === activeDocId) return '#ffffff';
+          return d.exists ? '#0891b2' : '#334155';
+        });
+
+      node.select("text")
+        .text(d => d.title)
+        .attr("fill", d => (d.id === activeDocId ? '#ffffff' : '#cbd5e1'));
+
+      // Bind node clicks to navigation logic
+      node.on("click", (event, d) => {
+        if (d.exists && d.id !== activeDocId) {
+          activeDocId = d.id;
+          renderBlockEditor();
+          updateWikiLinksFromBlocks();
+        }
+      });
+
+      // Update simulation data
+      simulation.nodes(graphData.nodes);
+      simulation.force("link").links(graphData.links);
+      simulation.alpha(0.3).restart();
+
+      // Tick listener
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        node
+          .attr("transform", d => `translate(${d.x}, ${d.y})`);
+      });
+    }
+
+    // D3 Drag handlers
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    // Graph node insertion helper
+    document.getElementById('addNodeBtn').addEventListener('click', () => {
+      const pageTitle = prompt("Enter a title for the new page:");
+      if (!pageTitle) return;
+
+      const pageId = `doc-${Date.now()}`;
+      // Add page to database
+      documents[pageId] = {
+        title: pageTitle,
+        blocks: [
+          { id: `b-${Date.now()}`, type: 'heading_1', content: pageTitle },
+          { id: `b-${Date.now()}-2`, type: 'paragraph', content: 'Start editing to link this to other pages...' }
+        ]
+      };
+
+      // Add to Graph metadata
+      graphData.nodes.push({ id: pageId, title: pageTitle, exists: true });
+      
+      // Auto Navigate
+      activeDocId = pageId;
+      renderBlockEditor();
+      updateWikiLinksFromBlocks();
+    });
+
+    // Boot up Workspace Demos
+    renderBlockEditor();
+    updateWikiLinksFromBlocks();
+  </script>
+</body>
+</html>
